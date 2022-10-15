@@ -29,10 +29,9 @@ authRouter.post('/api/signup', async(req, res) => {
 authRouter.post('/api/signin', async(req, res) => {
     try {
         const { email, password } = req.body;
-        console.log(email);
-        console.log(password);
         const user = await User.findOne({ email });
         if (!user) {
+            console.log("oke");
             return res.status(400).json({ msg: "User is not found" });
         }
         const isMatch = await bcrypt.compare(password, user.password);
