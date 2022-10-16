@@ -4,23 +4,8 @@ const bcrypt = require("bcryptjs");
 const authRouter = express.Router();
 const jwt = require("jsonwebtoken");
 const { json } = require('express');
+const auth = require("../middlewares/auth_data");
 
-const auth = async(req, res, next) => {
-    try {
-        const token = req.header('x-auth-token');
-        if (!token) return res.status(401).json({ msg: "No auth token, acceess denied!" });
-        const verified = jwt.verify(token, 'passwordKey');
-        if (!verified)
-            return res
-                .status(401)
-                .json({ msg: 'Token verification failed, authorization denied,' });
-        req.user = verified.id;
-        req.token = token;
-        next();
-    } catch (err) {
-        res.status(500).json({ err: err.message });
-    }
-}
 
 
 authRouter.post('/api/signup', async(req, res) => {
@@ -71,7 +56,8 @@ authRouter.post('/api/validToken', async(req, res) => {
 
         const user = await User.findById(verified.id);
         if (!user) return res.json(false);
-        res.json(true);
+        // res.json(true);
+        res.json({ check: true, ...user._doc });
     } catch (e) {
         res.status(500).json({ err: e.message });
     }
