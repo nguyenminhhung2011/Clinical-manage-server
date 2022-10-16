@@ -50,9 +50,9 @@ authRouter.post('/api/signin', async(req, res) => {
 authRouter.post('/api/validToken', async(req, res) => {
     try {
         const token = req.header('X-auth-token');
-        if (!token) return res.json(false);
+        if (!token) return res.json({ check: false });
         const verified = jwt.verify(token, "passwordkey");
-        if (!verified) return res.json(false);
+        if (!verified) return res.json({ check: false });
 
         const user = await User.findById(verified.id);
         if (!user) return res.json(false);
