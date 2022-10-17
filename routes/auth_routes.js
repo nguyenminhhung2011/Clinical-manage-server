@@ -6,8 +6,6 @@ const jwt = require("jsonwebtoken");
 const { json } = require('express');
 const auth = require("../middlewares/auth_data");
 
-
-
 authRouter.post('/api/signup', async(req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -31,7 +29,7 @@ authRouter.post('/api/signup', async(req, res) => {
 authRouter.post('/api/signin', async(req, res) => {
     try {
         const { email, password } = req.body;
-        console.log(11);
+        console.log("hahahah");
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ msg: "User is not found" });
