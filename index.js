@@ -19,10 +19,10 @@ io.on("connection", (socket) => {
         console.log(msg);
     });
     socket.on('fromClient', data => {
-        console.log(data);
-        socket.emit('fromServer', `${Number(data)+1}`)
-    })
-    socket.emit("fromServer", "connected");
+            console.log(data);
+            socket.emit('fromServer', `${Number(data)+1}`)
+        })
+        // socket.emit("fromServer", "connected");
 });
 mongoose.connect(DB).then(() => {
         console.log("Connection Successful");
