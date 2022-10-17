@@ -18,6 +18,7 @@ io.on("connection", (socket) => {
     socket.on("/test", (msg) => {
         console.log(msg);
     })
+    socket.emit("fromServer", "connected");
 });
 mongoose.connect(DB).then(() => {
         console.log("Connection Successful");
