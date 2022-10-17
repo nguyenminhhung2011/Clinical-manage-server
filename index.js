@@ -31,11 +31,3 @@ server.listen(PORT, () => {
     console.log(`Connection with port: ${PORT}`);
 });
 
-
-server.get('/', (req, res) => {
-    try {
-        res.json({ ok: 'oke' });
-    } catch (e) {
-        res.status(500).json({ err: e.message });
-    }
-});
