@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
     console.log(socket.id, "has joined");
     socket.on("/test", (msg) => {
         console.log(msg);
-    })
+    });
     socket.emit("fromServer", "connected");
 });
 mongoose.connect(DB).then(() => {
@@ -32,10 +32,10 @@ server.listen(PORT, () => {
 });
 
 
-app.get('/', (req, res) => {
-    try {
-        res.json({ ok: 'oke' });
-    } catch (e) {
-        res.status(500).json({ err: e.message });
-    }
-});
+// app.get('/', (req, res) => {
+//     try {
+//         res.json({ ok: 'oke' });
+//     } catch (e) {
+//         res.status(500).json({ err: e.message });
+//     }
+// });
