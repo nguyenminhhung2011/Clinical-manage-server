@@ -32,10 +32,10 @@ server.listen(PORT, () => {
 });
 
 
-// app.get('/', (req, res) => {
-//     try {
-//         res.json({ ok: 'oke' });
-//     } catch (e) {
-//         res.status(500).json({ err: e.message });
-//     }
-// });
+server.get('/', (req, res) => {
+    try {
+        res.json({ ok: 'oke' });
+    } catch (e) {
+        res.status(500).json({ err: e.message });
+    }
+});
