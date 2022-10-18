@@ -18,7 +18,11 @@ io.on("connection", (socket) => {
     socket.on("/test", (msg) => {
         console.log(msg);
     });
-    socket.emit("fromServer", "connected");
+    socket.on('fromClient', data => {
+            console.log(data);
+            socket.emit('fromServer', `${Number(data)+1}`)
+        })
+        // socket.emit("fromServer", "connected");
 });
 mongoose.connect(DB).then(() => {
         console.log("Connection Successful");
@@ -30,12 +34,3 @@ mongoose.connect(DB).then(() => {
 server.listen(PORT, () => {
     console.log(`Connection with port: ${PORT}`);
 });
-
-
-// app.get('/', (req, res) => {
-//     try {
-//         res.json({ ok: 'oke' });
-//     } catch (e) {
-//         res.status(500).json({ err: e.message });
-//     }
-// });
