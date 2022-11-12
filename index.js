@@ -30,7 +30,9 @@ mongoose.connect(DB).then(() => {
     .catch((e) => {
         console.log(e);
     });
-
+app.get('/user', async(req, res) => {
+    res.json({ name: "Nguyen Minh Hung" });
+});
 server.listen(PORT, () => {
     console.log(`Connection with port: ${PORT}`);
 });
