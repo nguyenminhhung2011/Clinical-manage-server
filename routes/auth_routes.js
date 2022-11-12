@@ -44,6 +44,28 @@ authRouter.post('/api/signin', async(req, res) => {
         res.status(500).json({ err: e.message });
     }
 });
+authRouter.post('/api/changePassword', async(req, res) => {
+    try {
+        const { email, password, newPassword } = req.body;
+        console.log("change password function is called");
+        let user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ msg: "User is not found" });
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ msg: "Incorrect Password" });
+        } else {
+            console.log("password is success");
+        }
+        const hasedPassword = await bcrypt.hash(newPassword, 8);
+        user.password = hasedPassword;
+        user = await user.save();
+        res.json(user);
+    } catch (e) {
+        res.status(500).json({ err: e.message });
+    }
+});
 
 authRouter.post('/api/validToken', async(req, res) => {
     try {
@@ -66,4 +88,8 @@ authRouter.get('/getUser', auth, async(req, res) => {
     res.json({...user._doc, token: req.token });
 });
 
+
+authRouter.get('/user', async(req, res) => {
+    res.json({ name: "Nguyen Minh Hung" });
+})
 module.exports = authRouter;
