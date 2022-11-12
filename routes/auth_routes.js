@@ -66,7 +66,7 @@ authRouter.get('/getUser', auth, async(req, res) => {
     res.json({...user._doc, token: req.token });
 });
 
-authRouter.get('/hello', async(req, res) => {
+authRouter.post('/hello', async(req, res) => {
    res.send("Hello");
 });
 
