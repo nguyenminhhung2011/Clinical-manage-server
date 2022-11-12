@@ -6,9 +6,9 @@ const jwt = require("jsonwebtoken");
 const { json } = require('express');
 const auth = require("../middlewares/auth_data");
 
-authRouter.get('/user') , async(req, res)=>{
-    res.json("Nguyen Minh Hung");   
-}
+authRouter.get('/user', async(req, res)=>{
+    res.json({name :"Nguyen Minh Hung"});   
+});
 authRouter.post('/api/signup', async(req, res) => {
     try {
         const { name, email, password } = req.body;
