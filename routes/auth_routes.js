@@ -6,9 +6,6 @@ const jwt = require("jsonwebtoken");
 const { json } = require('express');
 const auth = require("../middlewares/auth_data");
 
-authRouter.get('/user', async(req, res)=>{
-    res.json({name :"Nguyen Minh Hung"});   
-});
 authRouter.post('/api/signup', async(req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -67,6 +64,10 @@ authRouter.post('/api/validToken', async(req, res) => {
 authRouter.get('/getUser', auth, async(req, res) => {
     const user = await User.findById(req.user);
     res.json({...user._doc, token: req.token });
+});
+
+authRouter.get('/hello', async(req, res) => {
+   res.send("Hello");
 });
 
 module.exports = authRouter;
