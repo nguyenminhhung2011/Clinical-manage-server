@@ -35,6 +35,14 @@ const userSchema = mongoose.Schema({
         type: String,
         default: 'user',
     },
+    gender: {
+        type: String,
+        default: "Male",
+    },
+    dateBorn: {
+        type: Number,
+        default: 0,
+    }
     //Cart 
 });
 

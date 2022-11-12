@@ -67,6 +67,26 @@ authRouter.post('/api/changePassword', async(req, res) => {
     }
 });
 
+authRouter.post('/api/editProfile', async(req, res) => {
+    try {
+        console.log("Edit profile is called");
+        const { email, name, gender, dateBorn, address } = req.body;
+        let user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ msg: "User is not found" });
+        }
+        user.name = name;
+        // user.email = email;
+        user.gender = gender;
+        user.dateBorn = dateBorn;
+        user.address = address;
+        user = await user.save();
+        res.json(user);
+    } catch (e) {
+        res.status(500).json({ err: e.message });
+    }
+});
+
 authRouter.post('/api/validToken', async(req, res) => {
     try {
         const token = req.header('x-auth-token');
