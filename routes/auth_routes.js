@@ -87,6 +87,22 @@ authRouter.post('/api/editProfile', async(req, res) => {
     }
 });
 
+authRouter.post('/api/updateAvata', async(req, res) => {
+    try {
+        console.log("update avt is called");
+        const { email, image } = req.body;
+        let user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ msg: "user is not found" });
+        }
+        user.avt = image;
+        user = await user.save();
+        res.json(user);
+    } catch (e) {
+        res.status(500).json({ err: e.message });
+    }
+});
+
 authRouter.post('/api/validToken', async(req, res) => {
     try {
         const token = req.header('x-auth-token');
