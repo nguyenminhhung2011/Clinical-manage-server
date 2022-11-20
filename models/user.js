@@ -33,8 +33,20 @@ const userSchema = mongoose.Schema({
     },
     type: {
         type: String,
-        default: 'user',
+        default: 'user', //user admin  doctor
     },
+    gender: {
+        type: String,
+        default: "Male",
+    },
+    dateBorn: {
+        type: Number,
+        default: 0,
+    },
+    avt: {
+        type: String,
+        default: '',
+    }
     //Cart 
 });
 
