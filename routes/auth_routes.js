@@ -125,7 +125,4 @@ authRouter.get('/getUser', auth, async(req, res) => {
 });
 
 
-authRouter.get('/user', async(req, res) => {
-    res.json({ name: "Nguyen Minh Hung" });
-})
 module.exports = authRouter;
