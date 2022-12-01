@@ -70,7 +70,7 @@ authRouter.post('/api/changePassword', async(req, res) => {
 authRouter.post('/api/editProfile', async(req, res) => {
     try {
         console.log("Edit profile is called");
-        const { email, name, gender, dateBorn, address } = req.body;
+        const { email, name, gender, phoneNumber, dateBorn, address, avt } = req.body;
         let user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ msg: "User is not found" });
@@ -80,6 +80,8 @@ authRouter.post('/api/editProfile', async(req, res) => {
         user.gender = gender;
         user.dateBorn = dateBorn;
         user.address = address;
+        user.phoneNumber = phoneNumber;
+        user.avt = avt;
         user = await user.save();
         res.json(user);
     } catch (e) {

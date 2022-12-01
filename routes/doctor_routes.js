@@ -6,6 +6,21 @@ const doctorRouter = express.Router();
 const jwt = require("jsonwebtoken");
 const { json } = require('express');
 
+doctorRouter.get('api/doctor/getTop', async(req, res) => {
+    try {
+
+    } catch (e) {
+        res.status(500).json({ err: e.mesaage });
+    }
+});
+
+doctorRouter.get('api/doctor/getDoctorInfo/:emailDoctor', async(req, res) => {
+    try {
+        console.log("Get to info doctor");
+    } catch (e) {
+        res.status(500).json({ error: e.mesaage });
+    }
+});
 
 doctorRouter.get('/api/doctors/getAll', async(req, res) => {
     try {
