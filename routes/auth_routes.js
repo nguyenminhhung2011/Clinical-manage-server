@@ -1,10 +1,18 @@
 const express = require('express');
 const User = require('../models/user');
+const Token = require('../models/token')
 const bcrypt = require("bcryptjs");
 const authRouter = express.Router();
 const jwt = require("jsonwebtoken");
-const { json } = require('express');
+
+const { json, application } = require('express');
 const auth = require("../middlewares/auth_data");
+const mailTransporter = require("../middlewares/mail_transport");
+const e = require('express');
+const io = require('..');
+
+
+const JWT_SECRET = "asdfasdfadsfasdfqwerjfzxcv@#$#%@:::::"
 
 authRouter.post('/api/signup', async(req, res) => {
     try {
@@ -44,6 +52,7 @@ authRouter.post('/api/signin', async(req, res) => {
         res.status(500).json({ err: e.message });
     }
 });
+
 authRouter.post('/api/changePassword', async(req, res) => {
     try {
         const { email, password, newPassword } = req.body;
@@ -57,6 +66,84 @@ authRouter.post('/api/changePassword', async(req, res) => {
             return res.status(400).json({ msg: "Incorrect Password" });
         } else {
             console.log("password is success");
+        }
+        const hasedPassword = await bcrypt.hash(newPassword, 8);
+        user.password = hasedPassword;
+        user = await user.save();
+        res.json(user);
+    } catch (e) {
+        res.status(500).json({ err: e.message });
+    }
+});
+
+authRouter.post('/api/forgetPassword', async (req, res) => {
+    try {
+        const {email} = req.body; 
+        console.log("forget password function is called");
+        let user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ msg: "User is not found" });
+        }
+        
+        const secretKey = JWT_SECRET + user.password
+
+        const payload = {
+            email:user.email,
+            id:user._id
+        }
+        const token =  jwt.sign(payload,secretKey,{expiresIn:'15m'});
+        const link =  `http://localhost:5000/api/resetPassword/${user.id}/${token}`;
+
+        console.log(link);
+
+        await mailTransporter(link,email).then(result => console.log('Email sent ... ', result)).catch((error)=> console.log(error.message));
+        
+        res.json({isSentLink:true,msg:'Email Sent ! Please check your email to verify',token:token})
+        
+        
+    } catch (e) {
+        res.status(500).json({ err: e.message });
+    }
+});
+
+authRouter.get('/api/resetPassword/:id/:token',async (req,res) => {
+    const {id,token} = req.params;
+
+    let user = await User.findById(id);
+    if (!user){
+        return res.status(404).json({ msg: "User is not found" });
+    }
+
+    const secretKey = JWT_SECRET + user.password;
+    try {
+        const payload = jwt.verify(token,secretKey);
+        if (!payload){
+            res.json({isVerifySuccessful:false});
+        }
+        else{
+            let token = await Token.findOne({token:token});
+            if (!token){
+                return res.status(404).json({ msg: "User is not found" });
+            }
+            // io.to(token.socketID).emit("verify",{
+            //     isVerify : true,
+            // });
+            res.json({isVerifySuccessful: true});
+        }
+    } catch (error) {
+        res.status(500).json({msg:e.message});        
+    }
+    
+
+})
+
+authRouter.post('/api/restorePassword', async(req, res) => {
+    try {
+        const { email, newPassword } = req.body;
+        console.log("change password function is called");
+        let user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ msg: "User is not found" });
         }
         const hasedPassword = await bcrypt.hash(newPassword, 8);
         user.password = hasedPassword;
