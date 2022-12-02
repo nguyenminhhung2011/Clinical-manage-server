@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const {authRouter,sockets} = require('./routes/auth_routes');
+const {patientRouter} = require('./routes/patient_routes');
 const doctorRouter = require('./routes/doctor_routes');
 const departMentRouter = require('./routes/department_routes');
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(authRouter);
 app.use(doctorRouter);
 app.use(departMentRouter);
+app.use(patientRouter);
 
 io.on("connection", (socket) => {
     console.log(`New Client connected`);
@@ -55,6 +57,7 @@ app.use(doctorRouter);
 
 mongoose.connect(DB).then(() => {
     console.log("Connection Database Successful");
+    
 })
     .catch((e) => {
         console.log(e);
