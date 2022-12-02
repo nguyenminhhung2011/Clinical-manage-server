@@ -9,10 +9,9 @@ const { json, application } = require('express');
 const auth = require("../middlewares/auth_data");
 const mailTransporter = require("../middlewares/mail_transport");
 const e = require('express');
-const io = require('..');
-
-
 const JWT_SECRET = "asdfasdfadsfasdfqwerjfzxcv@#$#%@:::::"
+
+let sockets = new Map();
 
 authRouter.post('/api/signup', async(req, res) => {
     try {
@@ -126,12 +125,14 @@ authRouter.get('/api/resetPassword/:id/:token',async (req,res) => {
             if (!_token){
                 return res.status(404).json({ msg: "User is not found" });
             }
-            console.log('here')
+            console.log('here');
+            console.log(_token.socketID);
+            let socket =  sockets.get(_token.socketID);
+
+            console.log(socket.id);
             
-            io.to(_token.socketID).emit("verify",{
-                isVerify : true,
-            });
-            
+            socket.emit('verify','verified');
+
             console.log('here')
             res.json({isVerifySuccessful: true});
         }
@@ -217,4 +218,4 @@ authRouter.get('/getUser', auth, async(req, res) => {
 });
 
 
-module.exports = authRouter;
+module.exports = {authRouter,sockets};
