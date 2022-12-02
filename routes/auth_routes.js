@@ -58,20 +58,20 @@ authRouter.post('/api/changePassword', async (req, res) => {
         console.log("change password function is called");
         let user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ msg: "User is not found" });
+            return res.status(404).json({ isSuccess:true,msg: "User is not found" });
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ msg: "Incorrect Password" });
+            return res.status(400).json({isSuccess:true, msg: "Incorrect Password" });
         } else {
             console.log("password is success");
         }
         const hasedPassword = await bcrypt.hash(newPassword, 8);
         user.password = hasedPassword;
         user = await user.save();
-        res.json(user);
+        res.json({isSuccess:true,user:user});
     } catch (e) {
-        res.status(500).json({ err: e.message });
+        res.status(500).json({ isSuccess:true,err: e.message });
     }
 });
 
