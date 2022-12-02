@@ -26,29 +26,7 @@ doctorRouter.get('/api/doctors/getAll', async(req, res) => {
     try {
         console.log("Get all doctor");
         const doctors = await Doctor.find();
-        const type = "doctor";
-        // const authDoctors = await User.findOne({ type });
-        const listResponse = [];
-        for (let i = 0; i < doctors.length; i++) {
-            let email = doctors[i].email;
-            const user = await User.findOne({ email });
-            let responseItem = {
-                'email': user.email,
-                'name': user.name,
-                'address': user.address,
-                'gender': user.gender,
-                'dateBorn': user.dateBorn,
-                'avt': user.avt,
-                'type': doctors[i].type,
-                'description': doctors[i].description,
-                'timeStart': doctors[i].timeStart,
-                'timeFinish': doctors[i].timeFinish,
-                'experience': doctors[i].experience,
-
-            };
-            listResponse.push(responseItem);
-        }
-        res.json(listResponse);
+        res.json(doctors);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
@@ -89,6 +67,7 @@ doctorRouter.post('/api/doctors/addReview', async(req, res) => {
             rating,
             reviews,
         };
+
         doc.rating.push(ratingSchema);
         doc = await doc.save();
         res.json({
@@ -125,3 +104,25 @@ doctorRouter.post('/api/doctors/insertDoctor', async(req, res) => {
     }
 });
 module.exports = doctorRouter;
+// const type = "doctor";
+// // const authDoctors = await User.findOne({ type });
+// const listResponse = [];
+// for (let i = 0; i < doctors.length; i++) {
+//     let email = doctors[i].email;
+//     const user = await User.findOne({ email });
+//     let responseItem = {
+//         'email': user.email,
+//         'name': user.name,
+//         'address': user.address,
+//         'gender': user.gender,
+//         'dateBorn': user.dateBorn,
+//         'avt': user.avt,
+//         'type': doctors[i].type,
+//         'description': doctors[i].description,
+//         'timeStart': doctors[i].timeStart,
+//         'timeFinish': doctors[i].timeFinish,
+//         'experience': doctors[i].experience,
+
+//     };
+//     listResponse.push(responseItem);
+// }

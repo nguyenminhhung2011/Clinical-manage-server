@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRouter = require('./routes/auth_routes');
 const doctorRouter = require('./routes/doctor_routes');
+const departMentRouter = require('./routes/department_routes');
 
 
 const PORT = process.env.PORT || 5000;
@@ -15,6 +16,7 @@ const DB = "mongodb+srv://nguyenminhhung:20112002@cluster0.thz1i4g.mongodb.net/?
 app.use(express.json());
 app.use(authRouter);
 app.use(doctorRouter);
+app.use(departMentRouter);
 
 io.on("connection", (socket) => {
     console.log(`New Client connected`);
