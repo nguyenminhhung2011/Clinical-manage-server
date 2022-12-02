@@ -46,6 +46,10 @@ const userSchema = mongoose.Schema({
     avt: {
         type: String,
         default: '',
+    },
+    phoneNumber: {
+        type: String,
+        default: '',
     }
     //Cart 
 });
