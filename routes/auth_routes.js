@@ -116,18 +116,23 @@ authRouter.get('/api/resetPassword/:id/:token',async (req,res) => {
 
     const secretKey = JWT_SECRET + user.password;
     try {
-        const payload = jwt.verify(token,secretKey);
+        const payload =  jwt.verify(token,secretKey);
         if (!payload){
             res.json({isVerifySuccessful:false});
         }
         else{
-            let token = await Token.findOne({token:token});
-            if (!token){
+            console.log('here')
+            let _token = await Token.findOne({token:token});
+            if (!_token){
                 return res.status(404).json({ msg: "User is not found" });
             }
-            // io.to(token.socketID).emit("verify",{
-            //     isVerify : true,
-            // });
+            console.log('here')
+            
+            io.to(_token.socketID).emit("verify",{
+                isVerify : true,
+            });
+            
+            console.log('here')
             res.json({isVerifySuccessful: true});
         }
     } catch (error) {

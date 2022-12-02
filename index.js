@@ -14,13 +14,12 @@ app.use(authRouter);
 app.use(doctorRouter);
 
 io.on("connection", (socket) => {
-
-    // let token = socket.handshake.query.token
-    // socket.join(token)
-
+    socket.listen()
     console.log(`New Client connected`);
     console.log(socket.id, "has joined");
+    console.log(socket.handshake.query.test);
     socket.on("/test", (msg) => {
+        console.log("Calling Test");
         console.log(msg);
     });
     socket.on('fromClient', data => {
@@ -28,22 +27,15 @@ io.on("connection", (socket) => {
         socket.emit('fromServer', `${Number(data) + 1}`)
     },);
     socket.on('verify-success', async data => {
-        console.log(data);
-        
-        let _token = new Token(user._id,data.token,socket.id);
+        console.log(data.token);
+        let _token = new Token({token:data.token,socketID:socket.id});
         _token = await _token.save();
-        print(_token)
-
-        // socket.in(data.token).emit("verify",{
-        //     isVerify : true,
-        // });
+        console.log(_token)
     },);
     socket.on('finish', data => {
         console.log(data);
         socket.leave(socket.token);
     },);
-    
-    // socket.emit("fromServer", "connected");
 });
 
 
@@ -61,59 +53,3 @@ server.listen(PORT, () => {
 
 
 module.exports =  io
-
-// io.on('connection', socket => {
-//     //Get the chatID of the user and join in a room of the same chatID
-//     chatID = socket.handshake.query.chatID
-//     socket.join(chatID)
-//     //Leave the room if the user closes the socket
-//     socket.on('disconnect', () => {
-//         socket.leave(chatID)
-//     })
-//     //Send message to only a particular user
-//     socket.on('send_message', message => {
-//         receiverChatID = message.receiverChatID
-//         senderChatID = message.senderChatID
-//         content = message.content
-//         //Send message to only that particular room
-//         socket.in(receiverChatID).emit('receive_message', {
-//             'content': content,
-//             'senderChatID': senderChatID,
-//             'receiverChatID':receiverChatID,
-//         })
-//     })
-// });
-
-
-// io.sockets.on('connection', function (socket) {
-//     socket.on('new user', function (name, data) {
-//         if (name in users) {
-//             data(false);
-//         } else {
-//             data(true);
-//             socket.nickname = name;
-//             users[socket.nickname] = socket;
-//             console.log('add nickName');
-//             updateNickNames();
-//         }
-
-//     });
-
-//     function updateNickNames() {
-//         io.sockets.emit('usernames', Object.keys(users));
-//     }
-//     socket.on('open-chatbox', function (data) {
-//         users[data].emit('openbox', { nick: socket.nickname });
-//     });
-//     socket.on('send message', function (data, sendto) {
-//         users[sendto].emit('new message', { msg: data, nick: socket.nickname, sendto: sendto });
-//         users[socket.nickname].emit('new message', { msg: data, nick: socket.nickname, sendto: sendto });
-
-//         console.log(data);
-//     });
-//     socket.on('disconnect', function (data) {
-//         if (!socket.nickname) return;
-//         delete users[socket.nickname];
-//         updateNickNames();
-//     });
-// });
