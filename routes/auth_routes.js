@@ -13,7 +13,7 @@ const JWT_SECRET = "asdfasdfadsfasdfqwerjfzxcv@#$#%@:::::"
 
 let sockets = new Map();
 
-authRouter.post('/api/signup', async(req, res) => {
+authRouter.post('/api/signup', async (req, res) => {
     try {
         const { name, email, password } = req.body;
         const existingUser = await User.findOne({ email });
@@ -33,7 +33,7 @@ authRouter.post('/api/signup', async(req, res) => {
     }
 });
 
-authRouter.post('/api/signin', async(req, res) => {
+authRouter.post('/api/signin', async (req, res) => {
     try {
         const { email, password } = req.body;
         console.log("hahahah");
@@ -52,7 +52,7 @@ authRouter.post('/api/signin', async(req, res) => {
     }
 });
 
-authRouter.post('/api/changePassword', async(req, res) => {
+authRouter.post('/api/changePassword', async (req, res) => {
     try {
         const { email, password, newPassword } = req.body;
         console.log("change password function is called");
@@ -77,76 +77,78 @@ authRouter.post('/api/changePassword', async(req, res) => {
 
 authRouter.post('/api/forgetPassword', async (req, res) => {
     try {
-        const {email} = req.body; 
+        const { email } = req.body;
         console.log("forget password function is called");
         let user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ msg: "User is not found" });
         }
-        
+
         const secretKey = JWT_SECRET + user.password
 
         const payload = {
-            email:user.email,
-            id:user._id
+            email: user.email,
+            id: user._id
         }
-        const token =  jwt.sign(payload,secretKey,{expiresIn:'15m'});
-        const link =  `http://localhost:5000/api/resetPassword/${user.id}/${token}`;
+        const token = jwt.sign(payload, secretKey, { expiresIn: '15m' });
+        const link = `http://localhost:5000/api/resetPassword/${user.id}/${token}`;
 
         console.log(link);
 
-        await mailTransporter(link,email).then(result => console.log('Email sent ... ', result)).catch((error)=> console.log(error.message));
-        
-        res.json({isSentLink:true,msg:'Email Sent ! Please check your email to verify',token:token})
-        
-        
+        await mailTransporter(link, email).then(result => console.log('Email sent ... ', result)).catch((error) => console.log(error.message));
+
+        res.json({ isSentLink: true, msg: 'Email Sent ! Please check your email to verify', token: token })
+
+
     } catch (e) {
         res.status(500).json({ err: e.message });
     }
 });
 
-authRouter.get('/api/resetPassword/:id/:token',async (req,res) => {
-    const {id,token} = req.params;
+authRouter.get('/api/resetPassword/:id/:token', async (req, res) => {
+    const { id, token } = req.params;
 
     let user = await User.findById(id);
-    if (!user){
+    if (!user) {
         return res.status(404).json({ msg: "User is not found" });
     }
 
     const secretKey = JWT_SECRET + user.password;
     try {
-        const payload =  jwt.verify(token,secretKey);
-        if (!payload){
-            res.json({isVerifySuccessful:false});
+        const payload = jwt.verify(token, secretKey);
+        if (!payload) {
+            res.json({ isVerifySuccessful: false });
         }
-        else{
+        else {
             console.log('here')
-            let _token = await Token.findOne({token:token});
-            if (!_token){
-                return res.status(404).json({ msg: "User is not found" });
+            let _token = await Token.findOne({ token: token });
+            if (!_token) {
+                return res.status(404).json({ msg: "User is not found  Or verify link has expired" });
             }
             console.log('here');
             console.log(_token.socketID);
-            let socket =  sockets.get(_token.socketID);
+            let socket = sockets.get(_token.socketID);
 
             console.log(socket.id);
-            
-            socket.emit('verify','verified');
+
+            socket.emit('verify', 'verified');
 
             console.log('here')
-            res.json({isVerifySuccessful: true});
+
+            await Token.deleteMany({ token: token });
+            res.json({ isVerifySuccessful: true });
         }
     } catch (error) {
-        res.status(500).json({msg:e.message});        
+        res.status(500).json({ msg: e.message });
     }
-    
+
 
 })
 
-authRouter.post('/api/restorePassword', async(req, res) => {
+authRouter.post('/api/restorePassword', async (req, res) => {
     try {
         const { email, newPassword } = req.body;
-        console.log("change password function is called");
+        console.log("restorePassword function is called");
         let user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ msg: "User is not found" });
@@ -154,13 +156,14 @@ authRouter.post('/api/restorePassword', async(req, res) => {
         const hasedPassword = await bcrypt.hash(newPassword, 8);
         user.password = hasedPassword;
         user = await user.save();
-        res.json(user);
+        console.log("Changed password");
+        res.json({ isSuccess: true, user: user });
     } catch (e) {
         res.status(500).json({ err: e.message });
     }
 });
 
-authRouter.post('/api/editProfile', async(req, res) => {
+authRouter.post('/api/editProfile', async (req, res) => {
     try {
         console.log("Edit profile is called");
         const { email, name, gender, dateBorn, address } = req.body;
@@ -180,7 +183,7 @@ authRouter.post('/api/editProfile', async(req, res) => {
     }
 });
 
-authRouter.post('/api/updateAvata', async(req, res) => {
+authRouter.post('/api/updateAvata', async (req, res) => {
     try {
         console.log("update avt is called");
         const { email, image } = req.body;
@@ -196,7 +199,7 @@ authRouter.post('/api/updateAvata', async(req, res) => {
     }
 });
 
-authRouter.post('/api/validToken', async(req, res) => {
+authRouter.post('/api/validToken', async (req, res) => {
     try {
         const token = req.header('x-auth-token');
         if (!token) return res.json({ check: false });
@@ -212,10 +215,10 @@ authRouter.post('/api/validToken', async(req, res) => {
     }
 });
 
-authRouter.get('/getUser', auth, async(req, res) => {
+authRouter.get('/getUser', auth, async (req, res) => {
     const user = await User.findById(req.user);
-    res.json({...user._doc, token: req.token });
+    res.json({ ...user._doc, token: req.token });
 });
 
 
-module.exports = {authRouter,sockets};
+module.exports = { authRouter, sockets };

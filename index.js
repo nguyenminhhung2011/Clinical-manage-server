@@ -15,6 +15,7 @@ io.on("connection", (socket) => {
     console.log(socket.handshake.query.test);
     sockets.set(socket.id, socket);
 
+
     socket.on("/test", (msg) => {
         console.log("Calling Test");
         console.log(msg);
@@ -24,7 +25,6 @@ io.on("connection", (socket) => {
         console.log(data);
         socket.emit('fromServer', `${Number(data) + 1}`)
     },);
-
     socket.on('verify-success', async data => {
 
         console.log(data.token);
