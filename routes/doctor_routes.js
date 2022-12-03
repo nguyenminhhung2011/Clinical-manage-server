@@ -5,6 +5,8 @@ const bcrypt = require("bcryptjs");
 const doctorRouter = express.Router();
 const jwt = require("jsonwebtoken");
 const { json } = require('express');
+const admin = require("../middlewares/admin_data");
+
 
 doctorRouter.get('api/doctor/getTop', async(req, res) => {
     try {
@@ -55,6 +57,18 @@ doctorRouter.get('/api/doctors/getAllReviews/:emailDoctor', async(req, res) => {
     }
 });
 
+doctorRouter.get('/api/doctors/doctorDetail/:emailDoctor', async(req, res) => {
+    try {
+        console.log("Get doctor detail");
+        const doc = await Doctor.findOne({ email: req.params.emailDoctor });
+        const user = await User.findOne({ email: req.params.emailDoctor });
+        res.json(doc);
+
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 doctorRouter.post('/api/doctors/addReview', async(req, res) => {
     try {
         console.log("add reviews is called");
@@ -84,19 +98,65 @@ doctorRouter.post('/api/doctors/addReview', async(req, res) => {
     }
 });
 
+doctorRouter.post('/api/doctors/deleteDoctor', async(req, res) => {
+    try {
+        console.log("Delete Doctor function is called");
+        const { id } = req.body;
+        // let docc = await Doctor.findById(id);
+        // let user = await User.findOneAndDelete({ email: docc.ema });
+        let doc = await Doctor.findByIdAndDelete(id);
+        res.json(doc);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// doctorRouter.post('/')
+
+doctorRouter.get('/api/doctors/searchDoctor/:name', async(req, res) => {
+    try {
+        console.log("Search Doctor function is called");
+        const doctors = await Doctor.find({
+            name: { $regex: req.params.name, $options: "i" },
+        });
+        res.json(doctors);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+
 doctorRouter.post('/api/doctors/insertDoctor', async(req, res) => {
     try {
         console.log("Insert doctor is called");
-        const { email, type, description, timeStart, timeFinish, experience } = req.body;
+        const { name, address, avt, dateBorn, departMent, experience, iDBS, phoneNumber, description, email, password, } = req.body;
         let doctor = new Doctor({
-            email,
-            type,
+            iDBS,
+            name,
+            address,
+            dateBorn,
+            phoneNumber,
+            avt,
+            departMent,
             description,
-            timeStart,
-            timeFinish,
             experience,
         });
-        console.log(doctor.email);
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ msg: "Doctor with the same already exisits" });
+        }
+        const hashedPassword = await bcrypt.hash(password, 8);
+        let user = new User({
+            email,
+            password: hashedPassword,
+            name,
+            type: "Doctor",
+            phoneNumber: phoneNumber,
+            avt: avt,
+            address: address,
+            dateBorn: dateBorn,
+        });
+        user = await user.save();
         doctor = await doctor.save();
         res.json(doctor);
     } catch (e) {
@@ -104,25 +164,3 @@ doctorRouter.post('/api/doctors/insertDoctor', async(req, res) => {
     }
 });
 module.exports = doctorRouter;
-// const type = "doctor";
-// // const authDoctors = await User.findOne({ type });
-// const listResponse = [];
-// for (let i = 0; i < doctors.length; i++) {
-//     let email = doctors[i].email;
-//     const user = await User.findOne({ email });
-//     let responseItem = {
-//         'email': user.email,
-//         'name': user.name,
-//         'address': user.address,
-//         'gender': user.gender,
-//         'dateBorn': user.dateBorn,
-//         'avt': user.avt,
-//         'type': doctors[i].type,
-//         'description': doctors[i].description,
-//         'timeStart': doctors[i].timeStart,
-//         'timeFinish': doctors[i].timeFinish,
-//         'experience': doctors[i].experience,
-
-//     };
-//     listResponse.push(responseItem);
-// }

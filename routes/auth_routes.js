@@ -13,7 +13,7 @@ const JWT_SECRET = "asdfasdfadsfasdfqwerjfzxcv@#$#%@:::::"
 
 let sockets = new Map();
 
-authRouter.post('/api/signup', async (req, res) => {
+authRouter.post('/api/signup', async(req, res) => {
     try {
         const { name, email, password } = req.body;
         const existingUser = await User.findOne({ email });
@@ -25,7 +25,7 @@ authRouter.post('/api/signup', async (req, res) => {
             email,
             password: hashedPassword,
             name,
-        });
+        }); 
         user = await user.save();
         res.json(user);
     } catch (e) {
@@ -33,7 +33,7 @@ authRouter.post('/api/signup', async (req, res) => {
     }
 });
 
-authRouter.post('/api/signin', async (req, res) => {
+authRouter.post('/api/signin', async(req, res) => {
     try {
         const { email, password } = req.body;
         console.log("hahahah");
@@ -52,7 +52,7 @@ authRouter.post('/api/signin', async (req, res) => {
     }
 });
 
-authRouter.post('/api/changePassword', async (req, res) => {
+authRouter.post('/api/changePassword', async(req, res) => {
     try {
         const { email, password, newPassword } = req.body;
         console.log("change password function is called");
@@ -75,7 +75,7 @@ authRouter.post('/api/changePassword', async (req, res) => {
     }
 });
 
-authRouter.post('/api/forgetPassword', async (req, res) => {
+authRouter.post('/api/forgetPassword', async(req, res) => {
     try {
         const { email } = req.body;
         console.log("forget password function is called");
@@ -105,7 +105,7 @@ authRouter.post('/api/forgetPassword', async (req, res) => {
     }
 });
 
-authRouter.get('/api/resetPassword/:id/:token', async (req, res) => {
+authRouter.get('/api/resetPassword/:id/:token', async(req, res) => {
     const { id, token } = req.params;
 
     let user = await User.findById(id);
@@ -118,8 +118,7 @@ authRouter.get('/api/resetPassword/:id/:token', async (req, res) => {
         const payload = jwt.verify(token, secretKey);
         if (!payload) {
             res.json({ isVerifySuccessful: false });
-        }
-        else {
+        } else {
             console.log('here')
             let _token = await Token.findOne({ token: token });
             if (!_token) {
@@ -145,7 +144,7 @@ authRouter.get('/api/resetPassword/:id/:token', async (req, res) => {
 
 })
 
-authRouter.post('/api/restorePassword', async (req, res) => {
+authRouter.post('/api/restorePassword', async(req, res) => {
     try {
         const { email, newPassword } = req.body;
         console.log("restorePassword function is called");
@@ -163,7 +162,7 @@ authRouter.post('/api/restorePassword', async (req, res) => {
     }
 });
 
-authRouter.post('/api/editProfile', async (req, res) => {
+authRouter.post('/api/editProfile', async(req, res) => {
     try {
         console.log("Edit profile is called");
         const { email, name, gender, phoneNumber, dateBorn, address, avt } = req.body;
@@ -185,7 +184,7 @@ authRouter.post('/api/editProfile', async (req, res) => {
     }
 });
 
-authRouter.post('/api/updateAvata', async (req, res) => {
+authRouter.post('/api/updateAvata', async(req, res) => {
     try {
         console.log("update avt is called");
         const { email, image } = req.body;
@@ -201,7 +200,7 @@ authRouter.post('/api/updateAvata', async (req, res) => {
     }
 });
 
-authRouter.post('/api/validToken', async (req, res) => {
+authRouter.post('/api/validToken', async(req, res) => {
     try {
         const token = req.header('x-auth-token');
         if (!token) return res.json({ check: false });
@@ -217,9 +216,9 @@ authRouter.post('/api/validToken', async (req, res) => {
     }
 });
 
-authRouter.get('/getUser', auth, async (req, res) => {
+authRouter.get('/getUser', auth, async(req, res) => {
     const user = await User.findById(req.user);
-    res.json({ ...user._doc, token: req.token });
+    res.json({...user._doc, token: req.token });
 });
 
 
