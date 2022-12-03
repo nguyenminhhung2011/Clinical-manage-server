@@ -17,7 +17,9 @@ patientRouter.post('/api/addPatient/', async (req, res) => {
             dob,
             phoneNumber,
             avt,
-            status } = req.body;
+            status,
+            symptom,
+        } = req.body;
 
         let patient = new Patient({
             name,
@@ -26,7 +28,8 @@ patientRouter.post('/api/addPatient/', async (req, res) => {
             dob,
             phoneNumber,
             avt,
-            status
+            status,
+            symptom
         });
 
         let checkPatientExisting = await Patient.find({ name: name, address: address });
@@ -36,7 +39,7 @@ patientRouter.post('/api/addPatient/', async (req, res) => {
         }
 
         patient = await patient.save();
-        res.json({ id: patient._id, ...patient._doc });
+        res.json({ id: patient._id,isSuccess:true });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

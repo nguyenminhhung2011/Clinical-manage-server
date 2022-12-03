@@ -30,7 +30,12 @@ const patientSchema = mongoose.Schema({
         type: String,
         default: "",
     },
-    status:{
+    status: {
+        require: true,
+        type: String,
+        default: "",
+    },
+    symptom: {
         require: true,
         type: String,
         default: "",
