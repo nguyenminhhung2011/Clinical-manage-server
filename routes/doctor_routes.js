@@ -111,7 +111,25 @@ doctorRouter.post('/api/doctors/deleteDoctor', async(req, res) => {
     }
 });
 
-// doctorRouter.post('/')
+doctorRouter.post('/api/doctors/editDoctor', async(req, res) => {
+    try {
+        console.log("Edit Doctor Function is  called");
+        const { id, name, address, avt, dateBorn, departMent, experience, phoneNumber, description } = req.body;
+        let doctor = await Doctor.findById(id);
+        doctor.name = name;
+        doctor.address = address;
+        doctor.avt = avt;
+        doctor.dateBorn = dateBorn;
+        doctor.departMent = departMent;
+        doctor.experience = experience;
+        doctor.phoneNumber = phoneNumber;;
+        doctor.description = description;
+        doctor = await doctor.save();
+        res.json(doctor);
+    } catch (e) {
+        res.status(500).jsono({ error: e.message });
+    }
+});
 
 doctorRouter.get('/api/doctors/searchDoctor/:name', async(req, res) => {
     try {

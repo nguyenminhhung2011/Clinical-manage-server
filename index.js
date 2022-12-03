@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const {authRouter,sockets} = require('./routes/auth_routes');
-const {patientRouter} = require('./routes/patient_routes');
+const { authRouter, sockets } = require('./routes/auth_routes');
+const { patientRouter } = require('./routes/patient_routes');
 const doctorRouter = require('./routes/doctor_routes');
 const departMentRouter = require('./routes/department_routes');
 
@@ -35,19 +35,19 @@ io.on("connection", (socket) => {
     socket.on('fromClient', data => {
         console.log(data);
         socket.emit('fromServer', `${Number(data) + 1}`)
-    },);
+    }, );
     socket.on('verify-success', async data => {
 
         console.log(data.token);
         let _token = new Token({ token: data.token, socketID: socket.id });
         _token = await _token.save();
         console.log(_token)
-    },);
+    }, );
 
     socket.on('finish', data => {
         console.log(data);
         socket.leave(socket.token);
-    },);
+    }, );
 });
 
 app.use(express.json());
@@ -56,9 +56,9 @@ app.use(doctorRouter);
 
 
 mongoose.connect(DB).then(() => {
-    console.log("Connection Database Successful");
-    
-})
+        console.log("Connection Database Successful");
+
+    })
     .catch((e) => {
         console.log(e);
     });
@@ -66,4 +66,3 @@ mongoose.connect(DB).then(() => {
 server.listen(PORT, () => {
     console.log(`Connection with port: ${PORT}`);
 });
-
