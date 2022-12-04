@@ -25,6 +25,11 @@ const patientSchema = mongoose.Schema({
         type: String,
         default: "",
     },
+    email: {
+        require: true,
+        type: String,
+        default: "",
+    },
     avt: {
         require: true,
         type: String,
