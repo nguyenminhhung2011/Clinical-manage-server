@@ -9,9 +9,14 @@ const serviceScheme = mongoose.Schema({
     price:{
         require:true,
         type:Number,
-        default:"",
+        default:0.0,
     },
     departmentId:{
+        require:true,
+        type:String,
+        default:"",
+    },
+    description:{
         require:true,
         type:String,
         default:"",

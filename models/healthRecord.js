@@ -9,27 +9,23 @@ const healthRecordSchema = mongoose.Schema({
     totalMoney: {
         require: true,
         type: Number,
-        default: 0,
+        default: 0.0,
     },
-
-    department: {
+    departmentId: {
         require: true,
         type: String,
         default: ""
     },
-
     note: {
         require: false,
         type: String,
         default: ""
     },
-
     doctorId: {
         require: true,
         type: String,
         default: "",
     },
-
     clinicalExamination: {
         require: true,
         type: String,
@@ -40,7 +36,6 @@ const healthRecordSchema = mongoose.Schema({
         type: String,
         default: "",
     },
-
     diagnostic: {
         require: true,
         type: String,
@@ -56,29 +51,29 @@ const healthRecordSchema = mongoose.Schema({
     weight: {
         require: true,
         type: Number,
-        default: 0,
+        default: 0.0,
     },
 
     height: {
         require: true,
         type: Number,
-        default: 0,
+        default: 0.0,
     },
     heartBeat: {
         require: true,
         type: Number,
-        default: 0,
+        default: 0.0,
     },
 
     temperature: {
         require: true,
         type: Number,
-        default: 0,
+        default: 0.0,
     },
     bloodPressure:{
         require:true,
         type:Number,
-        default:0,
+        default:0.0,
     },
     allergy:{
         require:false,
@@ -94,7 +89,31 @@ const healthRecordSchema = mongoose.Schema({
             quantity: {
                 require:true,
                 type:Number,
+                default:0,
             },
+            amount:{
+                require:true,
+                type:Number,
+                default:0.0,
+            }
+        }
+    ],
+    medicines:[
+        {
+            medicine:{
+                require:true,
+                type:String,
+            },
+            quantity:{
+                require:true,
+                type:Number,
+                default:0,
+            },
+            amount:{
+                require:true,
+                type:Number,
+                default:0.0,
+            }
         }
     ]
 })
