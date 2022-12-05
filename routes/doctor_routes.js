@@ -127,16 +127,33 @@ doctorRouter.post('/api/doctors/editDoctor', async(req, res) => {
         doctor = await doctor.save();
         res.json(doctor);
     } catch (e) {
-        res.status(500).jsono({ error: e.message });
+        res.status(500).json({ error: e.message });
     }
 });
 
-doctorRouter.get('/api/doctors/searchDoctor/:name', async(req, res) => {
+doctorRouter.get('/api/doctors/getTopDoctor', async(req, res) =>{
+    try{
+        console.log("Get top doctor Function is called");
+        
+    } catch(e){
+        res.status(500).json({error: e.message});
+    }
+});
+
+doctorRouter.get('/api/doctors/searchDoctor/:name/:filter', async(req, res) => {
     try {
         console.log("Search Doctor function is called");
-        const doctors = await Doctor.find({
-            name: { $regex: req.params.name, $options: "i" },
-        });
+        let doctors;
+        if (req.params.filter == "00") {
+            doctors = await Doctor.find({
+                name: { $regex: req.params.name, $options: "i" },
+            });
+        } else {
+            doctors = await Doctor.find({
+                name: { $regex: req.params.name, $options: "i" },
+            });
+
+        }
         res.json(doctors);
     } catch (e) {
         res.status(500).json({ error: e.message });

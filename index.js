@@ -4,7 +4,7 @@ const { authRouter, sockets } = require('./routes/auth_routes');
 const { patientRouter } = require('./routes/patient_routes');
 const doctorRouter = require('./routes/doctor_routes');
 const departMentRouter = require('./routes/department_routes');
-
+const medicineRouter = require('./routes/medicine_routes');
 
 const Token = require('./models/token');
 const PORT = process.env.PORT || 5000;
@@ -19,6 +19,8 @@ app.use(authRouter);
 app.use(doctorRouter);
 app.use(departMentRouter);
 app.use(patientRouter);
+app.use(medicineRouter);
+
 
 io.on("connection", (socket) => {
     console.log(`New Client connected`);
