@@ -83,6 +83,10 @@ const healthRecordSchema = mongoose.Schema({
     services: [
         {
             service:{
+                require:true,   
+                type:String,
+            },
+            provider:{
                 require:true,
                 type:String,
             },
@@ -101,6 +105,10 @@ const healthRecordSchema = mongoose.Schema({
     medicines:[
         {
             medicine:{
+                require:true,
+                type:String,
+            },
+            provider:{
                 require:true,
                 type:String,
             },
