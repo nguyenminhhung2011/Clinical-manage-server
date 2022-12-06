@@ -5,6 +5,7 @@ const medicineRouter = express.Router();
 const jwt = require("jsonwebtoken");
 const { json } = require('express');
 const admin = require("../middlewares/admin_data");
+const e = require('express');
 
 medicineRouter.get('/api/medicine/get_all', async(req, res) => {
     try {
@@ -75,6 +76,31 @@ medicineRouter.post('/api/medicine/delete_medicine', async(req, res) => {
         const { id } = req.body;
         let med = await Medicine.findByIdAndDelete(id);
         res.json(med);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+medicineRouter.get('/api/medicine/search/:name', async(req, res) => {
+    try {
+        console.log("Search medicine function is called");
+        let medicines;
+        medicines = await Medicine.find({
+            name: { $regex: req.params.name, $options: "i" },
+        });
+        res.json(medicines);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+medicineRouter.get('/api/medicine/selectFollowType/:type', async(req, res) => {
+    try {
+        console.log("Select  follow type function is called");
+        const medicines = await Medicine.find({
+            type: req.params.type,
+        });
+        res.json(medicines);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
