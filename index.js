@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+
+///////////////////////////////////ROUTER///////////////////////////////////
 const { authRouter, sockets } = require('./routes/auth_routes');
 const { patientRouter } = require('./routes/patient_routes');
 const doctorRouter = require('./routes/doctor_routes');
@@ -7,6 +9,9 @@ const departMentRouter = require('./routes/department_routes');
 const medicineRouter = require('./routes/medicine_routes');
 const invoiceRouter = require('./routes/invoice_routes');
 const healthRecordRouter = require('./routes/healthRecord_routes');
+const serviceRouter = require('./routes/service_routes')
+
+///////////////////////////////////LIBRARY///////////////////////////////////
 const Token = require('./models/token');
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -58,6 +63,7 @@ app.use(express.json());
 app.use(authRouter);
 app.use(doctorRouter);
 app.use(healthRecordRouter)
+app.use(serviceRouter)
 
 
 mongoose.connect(DB).then(() => {
