@@ -5,6 +5,7 @@ const { patientRouter } = require('./routes/patient_routes');
 const doctorRouter = require('./routes/doctor_routes');
 const departMentRouter = require('./routes/department_routes');
 const medicineRouter = require('./routes/medicine_routes');
+const invoiceRouter = require('./routes/invoice_routes');
 const healthRecordRouter = require('./routes/healthRecord_routes');
 const Token = require('./models/token');
 const PORT = process.env.PORT || 5000;
@@ -20,6 +21,7 @@ app.use(doctorRouter);
 app.use(departMentRouter);
 app.use(patientRouter);
 app.use(medicineRouter);
+app.use(invoiceRouter);
 
 
 io.on("connection", (socket) => {
