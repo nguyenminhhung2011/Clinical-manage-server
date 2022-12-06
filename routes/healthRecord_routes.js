@@ -3,10 +3,7 @@ const healthRecordRouter = express.Router();
 const HealthRecord = require('../models/healthRecord');
 const jwt = require("jsonwebtoken");
 
-const { json, application } = require('express');
 const auth = require("../middlewares/auth_data");
-const e = require('express');
-const { model } = require('mongoose');
 
 
 healthRecordRouter.post('/api/addHealthRecord', async (req, res) => {
@@ -101,7 +98,7 @@ healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
         console.log("editHealthRecord Function is  called");
         const {
             id,
-            dateCreate,
+            dateCreate, 
             totalMoney,
             departmentId,
             note,
