@@ -55,7 +55,7 @@ healthRecordRouter.post('/api/addHealthRecord', async (req, res) => {
 
         res.json({ id: healthRecord._id });
     } catch (error) {
-        res.status(500).json({error:error.message});
+        res.status(500).json({ error: error.message });
     }
 });
 
@@ -90,9 +90,66 @@ healthRecordRouter.get('/api/getAllHealthRecord', async (req, res) => {
             return res.status(404).json({ isSuccess: false, msg: "List Health Record Empty" });
         }
 
-        res.json({ isSuccess: true, healthRecords:healthRecords });
+        res.json({ isSuccess: true, healthRecords: healthRecords });
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+});
+
+healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
+    try {
+        console.log("editHealthRecord Function is  called");
+        const {
+            id,
+            dateCreate,
+            totalMoney,
+            departmentId,
+            note,
+            doctorId,
+            clinicalExamination,
+            symptom,
+            diagnostic,
+            conclusionAndTreatment,
+            weight,
+            height,
+            heartBeat,
+            temperature,
+            bloodPressure,
+            allergy,
+            services,
+            medicines,
+        } = req.body;
+
+        let healthRecord = await HealthRecord.findById(id);
+
+        if (!healthRecord) {
+            res.status(400).json({ msg: 'Can\'t found the corresponding healthRecord' })
+        }
+
+        healthRecord.dateCreate = dateCreate;
+        healthRecord.totalMoney = totalMoney;
+        healthRecord.departmentId = departmentId;
+        healthRecord.note = note;
+        healthRecord.doctorId = doctorId;
+        healthRecord.clinicalExamination = clinicalExamination;
+        healthRecord.symptom = symptom;
+        healthRecord.diagnostic = diagnostic;
+        healthRecord.conclusionAndTreatment = conclusionAndTreatment;
+        healthRecord.weight = weight;
+        healthRecord.height = height;
+        healthRecord.heartBeat = heartBeat;
+        healthRecord.temperature = temperature;
+        healthRecord.bloodPressure = bloodPressure;
+        healthRecord.allergy = allergy;
+        healthRecord.services = services;
+        healthRecord.medicines = medicines;
+
+        healthRecord = await healthRecord.save();
+
+        res.json({ id: healthRecord._id, isSuccess: true });
+
+    } catch (e) {
+        res.status(500).json({ error: e.message });
     }
 });
 
