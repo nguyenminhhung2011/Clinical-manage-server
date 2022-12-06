@@ -41,6 +41,15 @@ medicineRouter.post('/api/medicine/insert_medicine', async(req, res) => {
 medicineRouter.post('/api/medicine/edit_medicine', async(req, res) => {
     try {
         console.log("Edit medicine is called");
+        const { name, thumbnails, price, type, description, id } = req.body;
+        let medicine = await Medicine.findById(id);
+        medicine.name = name;
+        medicine.thumbnails = thumbnails;
+        medicine.price = price;
+        medicine.type = type;
+        medicine.description = description;
+        medicine = await medicine.save();
+        res.json(medicine);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
