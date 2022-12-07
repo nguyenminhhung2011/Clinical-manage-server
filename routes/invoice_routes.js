@@ -37,4 +37,18 @@ invoiceRouter.post('/api/invoice/add_invoice_medicine', async(req, res) => {
     }
 });
 
+
+invoiceRouter.post('/api/invoice/change_status_invoice', async(req, res) => {
+    try {
+        console.log("chage status incvoice is called");
+        const { id, status } = req.body;
+        let invoice = await Invoice.findById(id);
+        invoice.status = status;
+        invoice = await invoice.save();
+        res.json(invoice);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 module.exports = invoiceRouter;
