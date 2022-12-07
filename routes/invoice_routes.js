@@ -37,6 +37,25 @@ invoiceRouter.post('/api/invoice/add_invoice_medicine', async(req, res) => {
     }
 });
 
+invoiceRouter.post('/api/invoice/add_invoice_health_record', async(req, res) => {
+    try {
+        console.log("add invoice health record is called");
+        const { thumb, amount, status, createTime, title, hrId, category } = req.body;
+        let invoice = new Invoice({
+            thumb,
+            amount,
+            status,
+            createTime,
+            title,
+            hrId,
+            category,
+        });
+        invoice = await invoice.save();
+        res.json(invoice);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
 
 invoiceRouter.post('/api/invoice/change_status_invoice', async(req, res) => {
     try {
