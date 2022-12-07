@@ -14,6 +14,7 @@ serviceRouter.get('/api/service/getAllServicesData', async (req, res) => {
 
 serviceRouter.post('/api/service/addService', async (req, res) => {
     try {
+        console.log('Calling addService');
         const { name,price,departmentId,description} = req.body;
         
         const tempService = await Service.find({name:name,departmentId:departmentId});
@@ -22,7 +23,7 @@ serviceRouter.post('/api/service/addService', async (req, res) => {
         }
         
         let service = new Service({name,price,departmentId,description});
-        service = await service.await();
+        service = await service.save();
         
         res.json({isSuccess:true,id:service._id});
     } catch (error) {
