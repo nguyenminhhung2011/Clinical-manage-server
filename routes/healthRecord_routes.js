@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const auth = require("../middlewares/auth_data");
 
 
-healthRecordRouter.post('/api/addHealthRecord', async (req, res) => {
+healthRecordRouter.post('/api/addHealthRecord', async(req, res) => {
     try {
         const {
             dateCreate,
@@ -56,7 +56,7 @@ healthRecordRouter.post('/api/addHealthRecord', async (req, res) => {
     }
 });
 
-healthRecordRouter.post('/api/deleteHealthRecord/', async (req, res) => {
+healthRecordRouter.post('/api/deleteHealthRecord/', async(req, res) => {
     try {
         console.log('calling deleteHealthRecord Route');
         const { healthRecordId } = req.body;
@@ -77,10 +77,9 @@ healthRecordRouter.post('/api/deleteHealthRecord/', async (req, res) => {
     }
 });
 
-healthRecordRouter.get('/api/getAllHealthRecord', async (req, res) => {
+healthRecordRouter.get('/api/getAllHealthRecord', async(req, res) => {
     try {
         console.log('calling getAllHealthReportDta Route');
-
         let healthRecords = await HealthRecord.find();
 
         if (!healthRecords) {
@@ -93,7 +92,16 @@ healthRecordRouter.get('/api/getAllHealthRecord', async (req, res) => {
     }
 });
 
-healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
+healthRecordRouter.get('/deleteAllHealthRecord', async(req, res) => {
+    try {
+        const result = await HealthRecord.deleteMany();
+        res.json({ error: "oke" });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+healthRecordRouter.post('/api/editHealthRecord', async(req, res) => {
     try {
         console.log("editHealthRecord Function is  called");
         const {
@@ -169,5 +177,6 @@ healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
     }
 });
 
-module.exports = healthRecordRouter;
 
+
+module.exports = healthRecordRouter;

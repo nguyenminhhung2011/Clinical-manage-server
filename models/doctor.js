@@ -13,7 +13,7 @@ const doctorSchema = mongoose.Schema({
     },
     address: {
         require: true,
-        type: String,
+        type: String,   
         default: "",
     },
     dateBorn: {
