@@ -98,7 +98,7 @@ healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
         console.log("editHealthRecord Function is  called");
         const {
             id,
-            dateCreate, 
+            dateCreate,
             totalMoney,
             departmentId,
             note,
@@ -138,8 +138,27 @@ healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
         healthRecord.temperature = temperature;
         healthRecord.bloodPressure = bloodPressure;
         healthRecord.allergy = allergy;
+
+        healthRecord.services=[];
+        healthRecord.medicines=[];
+
+        for (let i = 0; i < services.length; i++) {
+            healthRecord.services.push({ service: services[i].service, });
+        }
         healthRecord.services = services;
         healthRecord.medicines = medicines;
+
+        for (let i = 0; i < services.length; i++) {
+            healthRecord.services.push({ service: services[i].service, provider: services[i].provider, quantity: services[i].quantity, amount: services[i].amount, },);
+        }
+        
+        for (let i = 0; i < medicines.length; i++) {
+            healthRecord.medicines.push({ medicine: medicines[i].medicine, provider: medicines[i].provider, quantity: medicines[i].quantity, amount: medicines[i].amount, },);
+        }
+
+        console.log(healthRecord.services);
+        console.log(healthRecord.medicines);
+
 
         healthRecord = await healthRecord.save();
 
