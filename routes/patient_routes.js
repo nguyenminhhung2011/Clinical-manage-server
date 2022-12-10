@@ -31,7 +31,8 @@ patientRouter.post('/api/addPatient/', async (req, res) => {
             email,
             avt,
             status,
-            symptom
+            symptom,
+
         });
 
         let checkPatientExisting = await Patient.find({ name: name, address: address });
@@ -99,8 +100,9 @@ patientRouter.post('/api/editPatient', async (req, res) => {
             avt,
             status,
             symptom,
+            healthRecord,
         } = req.body;
-       
+
         let patient = await Patient.findById(_id);
 
         if (!patient) {
@@ -115,12 +117,90 @@ patientRouter.post('/api/editPatient', async (req, res) => {
         patient.phoneNumber = phoneNumber;
         patient.status = status;
         patient.symptom = symptom;
+        patient.healthRecord = healthRecord;
         patient = await patient.save();
 
         res.json({ id: patient._id, isSuccess: true });
 
     } catch (e) {
         res.status(500).json({ error: e.message });
+    }
+});
+
+patientRouter.post('/api/editPatientRecord', async (req, res) => {
+    try {
+        console.log("editPatient Function is  called");
+        const {
+            _id,
+            healthRecord,
+        } = req.body;
+
+        let patient = await Patient.findById(_id);
+
+        if (!patient) {
+            res.status(400).json({ msg: 'Can\'t found the corresponding patient' })
+        }
+        patient.healthRecord.push(healthRecord);
+        patient = await patient.save();
+
+        res.json({ id: patient._id, isSuccess: true });
+
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+
+patientRouter.post('/api/addPatientRecord', async (req, res) => {
+    try {
+        console.log("editPatient Function is  called");
+        const {
+            _id,
+            healthRecord,
+        } = req.body;
+
+        let patient = await Patient.findById(_id);
+
+        if (!patient) {
+            res.status(400).json({ msg: 'Can\'t found the corresponding patient' })
+        }
+        patient.healthRecord.push(healthRecord);
+        console.log(patient.healthRecord);
+        patient = await patient.save();
+
+        res.json({ id: patient._id, isSuccess: true });
+
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+patientRouter.post('/api/deletePatientRecord/', async (req, res) => {
+    try {
+        console.log('calling deletePatient Route');
+        const { _id,
+            idHealthRecord, } = req.body;
+
+        console.log(_id);
+        let patient = await Patient.findById(_id);
+        console.log('here');
+        if (!patient) {
+            return res.status(404).json({ isSuccess: false, msg: "Can not found patient " });
+        }
+
+        for (let i = 0; i < patient.healthRecord.length; i++) {
+            if (patient.healthRecord[i] == idHealthRecord) {
+                patient.healthRecord.splice(i, 1);
+            }
+        }
+        patient = await patient.save();
+
+        console.log(patient);
+
+        res.json({ isSuccess: true, idHealthRecord:idHealthRecord});
+
+    } catch (error) {
+        res.status(500).json({ isSuccess: false, error: error.message });
     }
 });
 

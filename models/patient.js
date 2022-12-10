@@ -45,6 +45,13 @@ const patientSchema = mongoose.Schema({
         type: String,
         default: "",
     },
+    healthRecord: [
+        {
+            require: true,
+            type: String,
+            default: "",
+        },
+    ]
 });
 const Patient = mongoose.model("patients", patientSchema);
 module.exports = Patient;
