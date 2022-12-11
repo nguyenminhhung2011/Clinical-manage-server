@@ -14,6 +14,7 @@ healthRecordRouter.post('/api/addHealthRecord', async (req, res) => {
             departmentId,
             note,
             doctorId,
+            patientId,
             clinicalExamination,
             symptom,
             diagnostic,
@@ -34,6 +35,7 @@ healthRecordRouter.post('/api/addHealthRecord', async (req, res) => {
             departmentId,
             note,
             doctorId,
+            patientId,
             clinicalExamination,
             symptom,
             diagnostic,
@@ -103,6 +105,7 @@ healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
             departmentId,
             note,
             doctorId,
+            patientId,
             clinicalExamination,
             symptom,
             diagnostic,
@@ -128,6 +131,7 @@ healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
         healthRecord.departmentId = departmentId;
         healthRecord.note = note;
         healthRecord.doctorId = doctorId;
+        healthRecord.patientId = patientId;
         healthRecord.clinicalExamination = clinicalExamination;
         healthRecord.symptom = symptom;
         healthRecord.diagnostic = diagnostic;

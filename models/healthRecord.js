@@ -26,6 +26,11 @@ const healthRecordSchema = mongoose.Schema({
         type: String,
         default: "",
     },
+    patientId: {
+        require: true,
+        type: String,
+        default: "",
+    },
     clinicalExamination: {
         require: true,
         type: String,
