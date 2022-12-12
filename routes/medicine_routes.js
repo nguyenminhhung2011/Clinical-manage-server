@@ -131,5 +131,30 @@ medicineRouter.post('/api/medicine/pass_medicine', async(req, res) => {
         res.status(500).json({ error: e.message });
     }
 });
+medicineRouter.post('/api/medicine/pass_many_medicine', async(req, res) => {
+    try {
+        console.log("Pass many medicine func is called");
+        const { datePass, listData } = req.body;
 
+
+        for (let i = 0; i < listData.length; i++) {
+            let med = await Medicine.findById(listData[i].id);
+            console.log(med);
+            if (med.amount - listData[i].quantity > 0) {
+                med.amount -= listData[i].quantity;
+                med.listPass.push({
+                    date: datePass,
+                    price: listData[i]['price'],
+                    remain: med.amount,
+                });
+            }
+            med = await med.save();
+        }
+        // medicine = await medicine.save;
+        let medicine = await Medicine.find();
+        res.json(medicine);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
 module.exports = medicineRouter;
