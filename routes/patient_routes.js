@@ -118,6 +118,7 @@ patientRouter.post('/api/editPatient', async (req, res) => {
         patient.status = status;
         patient.symptom = symptom;
         patient.healthRecord = healthRecord;
+        console.log(patient.healthRecord);
         patient = await patient.save();
 
         res.json({ id: patient._id, isSuccess: true });
@@ -129,7 +130,7 @@ patientRouter.post('/api/editPatient', async (req, res) => {
 
 patientRouter.post('/api/editPatientRecord', async (req, res) => {
     try {
-        console.log("editPatient Function is  called");
+        console.log("editPatientRecord Function is  called");
         const {
             _id,
             healthRecord,
@@ -153,7 +154,7 @@ patientRouter.post('/api/editPatientRecord', async (req, res) => {
 
 patientRouter.post('/api/addPatientRecord', async (req, res) => {
     try {
-        console.log("editPatient Function is  called");
+        console.log("addPatientRecord Function is  called");
         const {
             _id,
             healthRecord,
