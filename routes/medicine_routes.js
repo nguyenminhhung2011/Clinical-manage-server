@@ -106,4 +106,30 @@ medicineRouter.get('/api/medicine/selectFollowType/:type', async(req, res) => {
     }
 });
 
+medicineRouter.post('/api/medicine/pass_medicine', async(req, res) => {
+    try {
+        console.log("Pass Medicine func is called");
+        const { id, datePass, price } = req.body;
+        let medicine = await Medicine.findById(id);
+        if (medicine == null) {
+            res.status(500), json({ error: "Medicine is not found" });
+            return;
+        }
+        if (medicine.amount <= 0) {
+            res.status(500).json({ error: "Medicine is not enough" });
+            return;
+        }
+        medicine.amount -= 1;
+        medicine.listPass.push({
+            date: datePass,
+            price,
+            remain: medicine.amount,
+        });
+        medicine = await medicine.save();
+        res.json(medicine);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 module.exports = medicineRouter;

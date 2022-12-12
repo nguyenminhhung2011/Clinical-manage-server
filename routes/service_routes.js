@@ -16,7 +16,6 @@ serviceRouter.post('/api/service/addService', async (req, res) => {
     try {
         console.log('Calling addService');
         const { name,price,departmentId,description} = req.body;
-        
         const tempService = await Service.find({name:name,departmentId:departmentId});
         if (tempService){
             res.status(400).json({isSuccess:false,msg:"Service in this department existed"});

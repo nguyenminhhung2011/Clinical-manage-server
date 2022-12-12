@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const auth = require("../middlewares/auth_data");
 
 
-healthRecordRouter.post('/api/addHealthRecord', async (req, res) => {
+healthRecordRouter.post('/api/addHealthRecord', async(req, res) => {
     try {
         const {
             dateCreate,
@@ -58,7 +58,7 @@ healthRecordRouter.post('/api/addHealthRecord', async (req, res) => {
     }
 });
 
-healthRecordRouter.post('/api/deleteHealthRecord/', async (req, res) => {
+healthRecordRouter.post('/api/deleteHealthRecord/', async(req, res) => {
     try {
         console.log('calling deleteHealthRecord Route');
         const { healthRecordId } = req.body;
@@ -79,7 +79,7 @@ healthRecordRouter.post('/api/deleteHealthRecord/', async (req, res) => {
     }
 });
 
-healthRecordRouter.get('/api/getAllHealthRecord', async (req, res) => {
+healthRecordRouter.get('/api/getAllHealthRecord', async(req, res) => {
     try {
         console.log('calling getAllHealthReportDta Route');
 
@@ -95,7 +95,7 @@ healthRecordRouter.get('/api/getAllHealthRecord', async (req, res) => {
     }
 });
 
-healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
+healthRecordRouter.post('/api/editHealthRecord', async(req, res) => {
     try {
         console.log("editHealthRecord Function is  called");
         const {
@@ -143,15 +143,15 @@ healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
         healthRecord.bloodPressure = bloodPressure;
         healthRecord.allergy = allergy;
 
-        healthRecord.services=[];
-        healthRecord.medicines=[];
+        healthRecord.services = [];
+        healthRecord.medicines = [];
 
         for (let i = 0; i < services.length; i++) {
-            healthRecord.services.push({ service: services[i].service, provider: services[i].provider, quantity: services[i].quantity, amount: services[i].amount, },);
+            healthRecord.services.push({ service: services[i].service, provider: services[i].provider, quantity: services[i].quantity, amount: services[i].amount, }, );
         }
-        
+
         for (let i = 0; i < medicines.length; i++) {
-            healthRecord.medicines.push({ medicine: medicines[i].medicine, provider: medicines[i].provider, quantity: medicines[i].quantity, amount: medicines[i].amount, },);
+            healthRecord.medicines.push({ medicine: medicines[i].medicine, provider: medicines[i].provider, quantity: medicines[i].quantity, amount: medicines[i].amount, }, );
         }
 
         healthRecord = await healthRecord.save();
@@ -164,4 +164,3 @@ healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
 });
 
 module.exports = healthRecordRouter;
-

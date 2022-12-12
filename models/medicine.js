@@ -40,6 +40,20 @@ const medicineSchema = mongoose.Schema({
         type: Number,
         default: "",
     },
+    listPass: [{
+        date: {
+            type: Number,
+            default: 0,
+        },
+        price: {
+            type: Number,
+            default: 0,
+        },
+        remain: {
+            type: Number,
+            default: 0,
+        },
+    }],
 });
 
 const Medicine = mongoose.model("medicine", medicineSchema);
