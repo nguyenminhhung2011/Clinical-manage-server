@@ -198,4 +198,6 @@ doctorRouter.post('/api/doctors/insertDoctor', async(req, res) => {
         res.status(500).json({ error: e.mesaage });
     }
 });
+
+
 module.exports = doctorRouter;
