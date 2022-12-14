@@ -198,12 +198,67 @@ patientRouter.post('/api/deletePatientRecord/', async (req, res) => {
 
         console.log(patient);
 
-        res.json({ isSuccess: true, idHealthRecord:idHealthRecord});
+        res.json({ isSuccess: true, idHealthRecord: idHealthRecord });
 
     } catch (error) {
         res.status(500).json({ isSuccess: false, error: error.message });
     }
 });
+
+patientRouter.get('/api/searchPatient/:attribute/:query', async (req, res) => {
+    try {
+        console.log("calling searchPatient");
+
+        const patientQuery = req.params.query;
+        const attribute = req.params.attribute;
+
+        let patient;
+
+        console.log(attribute.toLowerCase());
+
+        if (attribute.toLowerCase() == 'name') {
+            patient = await Patient.find(
+                { name: { $regex: patientQuery, $options: "i", } },
+                {
+                    'name': 0,
+                    'address': 0,
+                    'gender': 0,
+                    'dob': 0,
+                    'phoneNumber': 0,
+                    'email': 0,
+                    'avt': 0,
+                    'status': 0,
+                    'symptom': 0,
+                    'healthRecord': 0,
+                }
+            );
+        }
+        else if (attribute.toLowerCase() == 'id') {
+            patient = await Patient.find(
+                { id: { $regex: patientQuery, $options: "i" } },
+                {
+                    'name': 0,
+                    'address': 0,
+                    'gender': 0,
+                    'dob': 0,
+                    'phoneNumber': 0,
+                    'email': 0,
+                    'avt': 0,
+                    'status': 0,
+                    'symptom': 0,
+                    'healthRecord': 0,
+                }
+            );
+        }
+
+
+        res.json({ patient: patient });
+
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 
 
 module.exports = { patientRouter };
