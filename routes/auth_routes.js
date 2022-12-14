@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
+const Doctor = require('../models/doctor');
 const Token = require('../models/token')
 const bcrypt = require("bcryptjs");
 const authRouter = express.Router();
@@ -25,7 +26,7 @@ authRouter.post('/api/signup', async(req, res) => {
             email,
             password: hashedPassword,
             name,
-        }); 
+        });
         user = await user.save();
         res.json(user);
     } catch (e) {
@@ -46,6 +47,8 @@ authRouter.post('/api/signin', async(req, res) => {
             return res.status(400).json({ msg: "Incorrect Pssword" });
         }
         const token = jwt.sign({ id: user._id }, "passwordkey");
+        // if(res.)
+        // let doc = await Doctor.findOne({ idUser: user._id });
         res.json({ token, ...user._doc });
     } catch (e) {
         res.status(500).json({ err: e.message });
@@ -58,20 +61,20 @@ authRouter.post('/api/changePassword', async(req, res) => {
         console.log("change password function is called");
         let user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ isSuccess:true,msg: "User is not found" });
+            return res.status(404).json({ isSuccess: true, msg: "User is not found" });
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({isSuccess:true, msg: "Incorrect Password" });
+            return res.status(400).json({ isSuccess: true, msg: "Incorrect Password" });
         } else {
             console.log("password is success");
         }
         const hasedPassword = await bcrypt.hash(newPassword, 8);
         user.password = hasedPassword;
         user = await user.save();
-        res.json({isSuccess:true,user:user});
+        res.json({ isSuccess: true, user: user });
     } catch (e) {
-        res.status(500).json({ isSuccess:true,err: e.message });
+        res.status(500).json({ isSuccess: true, err: e.message });
     }
 });
 

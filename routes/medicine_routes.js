@@ -140,7 +140,7 @@ medicineRouter.post('/api/medicine/pass_many_medicine', async(req, res) => {
         for (let i = 0; i < listData.length; i++) {
             let med = await Medicine.findById(listData[i].id);
             console.log(med);
-            if (med.amount - listData[i].quantity > 0) {
+            if (med.amount - listData[i].quantity > -1) {
                 med.amount -= listData[i].quantity;
                 med.listPass.push({
                     date: datePass,

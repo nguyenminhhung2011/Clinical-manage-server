@@ -13,7 +13,7 @@ const doctorSchema = mongoose.Schema({
     },
     address: {
         require: true,
-        type: String,   
+        type: String,
         default: "",
     },
     dateBorn: {
@@ -45,6 +45,10 @@ const doctorSchema = mongoose.Schema({
         require: true,
         type: Number,
         default: 0,
+    },
+    idUser: {
+        type: String,
+        default: "",
     }
 });
 const Doctor = mongoose.model("doctor", doctorSchema);

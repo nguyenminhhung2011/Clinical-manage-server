@@ -104,7 +104,9 @@ doctorRouter.post('/api/doctors/deleteDoctor', async(req, res) => {
         const { id } = req.body;
         // let docc = await Doctor.findById(id);
         // let user = await User.findOneAndDelete({ email: docc.ema });
-        let doc = await Doctor.findByIdAndDelete(id);
+        let doc = await Doctor.findById(id);
+        let user = await User.findByIdAndDelete(doc.idUser);
+        doc = await Doctor.findByIdAndDelete(id);
         res.json(doc);
     } catch (e) {
         res.status(500).json({ error: e.message });
@@ -131,12 +133,22 @@ doctorRouter.post('/api/doctors/editDoctor', async(req, res) => {
     }
 });
 
-doctorRouter.get('/api/doctors/getTopDoctor', async(req, res) =>{
-    try{
+doctorRouter.get('/api/doctors/findByUserId/:id', async(req, res) => {
+    try {
+        console.log("get doctor by user id is called");
+        const doctor = await Doctor.findOne({ idUser: req.params.id });
+        res.json(doctor);
+    } catch (e) {
+        res.status(500).json({ error: e.mesaage });
+    }
+});
+
+doctorRouter.get('/api/doctors/getTopDoctor', async(req, res) => {
+    try {
         console.log("Get top doctor Function is called");
-        
-    } catch(e){
-        res.status(500).json({error: e.message});
+
+    } catch (e) {
+        res.status(500).json({ error: e.message });
     }
 });
 
@@ -192,6 +204,7 @@ doctorRouter.post('/api/doctors/insertDoctor', async(req, res) => {
             dateBorn: dateBorn,
         });
         user = await user.save();
+        doctor.idUser = user._id;
         doctor = await doctor.save();
         res.json(doctor);
     } catch (e) {
