@@ -70,4 +70,28 @@ invoiceRouter.post('/api/invoice/change_status_invoice', async(req, res) => {
     }
 });
 
+
+invoiceRouter.post('/api/invoice/delete_invoice', async(req, res) => {
+    try {
+        console.log("Delete Invoice is called");
+        const { id } = req.body;
+        let invoice = await Invoice.findByIdAndDelete(id);
+        res.json(invoice);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+invoiceRouter.post("/api/invoice/delete_many_invoice", async(req, res) => {
+    try {
+        console.log("Delete many invoice is called ");
+        const { listId } = req.body;
+        for (let i = 0; i < listId.length; i++) {
+            let iv = await Invoice.findByIdAndDelete(listId[i]);
+        }
+        res.json({ delete: "Success" });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
 module.exports = invoiceRouter;
