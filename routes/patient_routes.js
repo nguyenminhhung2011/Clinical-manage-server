@@ -250,6 +250,23 @@ patientRouter.get('/api/searchPatient/:attribute/:query', async (req, res) => {
                 }
             );
         }
+        else if (attribute == 'dateTime') {
+            patient = await Patient.find(
+                { dob: { $regex: patientQuery, $options: "i", } },
+                {
+                    'name': 0,
+                    'address': 0,
+                    'gender': 0,
+                    'dob': 0,
+                    'phoneNumber': 0,
+                    'email': 0,
+                    'avt': 0,
+                    'status': 0,
+                    'symptom': 0,
+                    'healthRecord': 0,
+                },
+            );
+        }
 
 
         res.json({ patient: patient });
@@ -257,6 +274,28 @@ patientRouter.get('/api/searchPatient/:attribute/:query', async (req, res) => {
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
+});
+
+patientRouter.get('/api/searchByDateTime/:dateTime', async (req, res) => {
+    console.log('calling searchByDateTime');
+    let dateTime = req.params.dateTime;
+    let patient = await Patient.find({
+        dob: { $regex: dateTime, $options: "i", }
+    },
+        {
+            'name': 0,
+            'address': 0,
+            'gender': 0,
+            'dob': 0,
+            'phoneNumber': 0,
+            'email': 0,
+            'avt': 0,
+            'status': 0,
+            'symptom': 0,
+            'healthRecord': 0,
+        },
+    );
+    res.json({ patient: patient });
 });
 
 
