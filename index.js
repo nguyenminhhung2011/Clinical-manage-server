@@ -11,6 +11,7 @@ const invoiceRouter = require('./routes/invoice_routes');
 const healthRecordRouter = require('./routes/healthRecord_routes');
 const serviceRouter = require('./routes/service_routes')
 const clinicalRoomRouter = require('./routes/clinical_room_routes');
+const regulationRouter = require('./routes/regulation_routes');
 
 ///////////////////////////////////LIBRARY///////////////////////////////////
 const Token = require('./models/token');
@@ -29,6 +30,7 @@ app.use(patientRouter);
 app.use(medicineRouter);
 app.use(invoiceRouter);
 app.use(clinicalRoomRouter);
+app.use(regulationRouter);
 
 io.on("connection", (socket) => {
     console.log(`New Client connected`);
