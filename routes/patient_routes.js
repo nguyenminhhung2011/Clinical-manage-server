@@ -7,6 +7,7 @@ const { json, application } = require('express');
 const auth = require("../middlewares/auth_data");
 const e = require('express');
 const JWT_SECRET = "asdfasdfadsfasdfqwerjfzxcv@#$#%@:::::"
+const { sockets } = require('./auth_routes');
 
 patientRouter.post('/api/addPatient/', async(req, res) => {
     try {
@@ -43,8 +44,12 @@ patientRouter.post('/api/addPatient/', async(req, res) => {
         }
 
         patient = await patient.save();
-        res.json(patient);
-        // res.json({ id: patient._id, isSuccess: true });
+
+        for (let socket of sockets.values()) {
+            await socket.emit('newPatient', { msg: 'There is a new patient added to database', patient: patient._id });
+        }
+        res.json({ id: patient._id, isSuccess: true });
+
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -67,6 +72,23 @@ patientRouter.post('/api/deletePatient/', async(req, res) => {
 
         res.json({ isSuccess: true, patient: { id: patient._id, ...patient._doc } });
 
+    } catch (error) {
+        res.status(500).json({ isSuccess: false, error: error.message });
+    }
+});
+
+patientRouter.get('/api/getPatientById/', async(req, res) => {
+    try {
+        console.log('calling getPatientById Route');
+        let id = req.headers['id'];
+        console.log(id);
+        let patient = await Patient.findById(id);
+
+        if (!patient) {
+            return res.status(404).json({ isSuccess: false, msg: "Not exists patient" });
+        }
+
+        res.json({ isSuccess: true, patient: patient });
     } catch (error) {
         res.status(500).json({ isSuccess: false, error: error.message });
     }
@@ -256,6 +278,19 @@ patientRouter.get('/api/searchPatient/:attribute/:query', async(req, res) => {
                 'symptom': 0,
                 'healthRecord': 0,
             });
+        } else if (attribute == 'dateTime') {
+            patient = await Patient.find({ dob: { $regex: patientQuery, $options: "i", } }, {
+                'name': 0,
+                'address': 0,
+                'gender': 0,
+                'dob': 0,
+                'phoneNumber': 0,
+                'email': 0,
+                'avt': 0,
+                'status': 0,
+                'symptom': 0,
+                'healthRecord': 0,
+            }, );
         }
 
 
@@ -264,6 +299,26 @@ patientRouter.get('/api/searchPatient/:attribute/:query', async(req, res) => {
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
+});
+
+patientRouter.get('/api/searchByDateTime/:dateTime', async(req, res) => {
+    console.log('calling searchByDateTime');
+    let dateTime = req.params.dateTime;
+    let patient = await Patient.find({
+        dob: { $regex: dateTime, $options: "i", }
+    }, {
+        'name': 0,
+        'address': 0,
+        'gender': 0,
+        'dob': 0,
+        'phoneNumber': 0,
+        'email': 0,
+        'avt': 0,
+        'status': 0,
+        'symptom': 0,
+        'healthRecord': 0,
+    }, );
+    res.json({ patient: patient });
 });
 
 
