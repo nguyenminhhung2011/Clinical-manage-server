@@ -8,10 +8,11 @@ const auth = require("../middlewares/auth_data");
 const e = require('express');
 const JWT_SECRET = "asdfasdfadsfasdfqwerjfzxcv@#$#%@:::::"
 
-patientRouter.post('/api/addPatient/', async (req, res) => {
+patientRouter.post('/api/addPatient/', async(req, res) => {
     try {
         console.log('calling addPatient Route');
-        const { name,
+        const {
+            name,
             address,
             gender,
             dob,
@@ -42,14 +43,15 @@ patientRouter.post('/api/addPatient/', async (req, res) => {
         }
 
         patient = await patient.save();
-        res.json({ id: patient._id, isSuccess: true });
+        res.json(patient);
+        // res.json({ id: patient._id, isSuccess: true });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
 
-patientRouter.post('/api/deletePatient/', async (req, res) => {
+patientRouter.post('/api/deletePatient/', async(req, res) => {
     try {
         console.log('calling deletePatient Route');
         const { patientId } = req.body;
@@ -70,7 +72,7 @@ patientRouter.post('/api/deletePatient/', async (req, res) => {
     }
 });
 
-patientRouter.get('/api/getAllPatient/', async (req, res) => {
+patientRouter.get('/api/getAllPatient/', async(req, res) => {
     try {
         console.log('calling getAllPatient Route');
 
@@ -86,7 +88,7 @@ patientRouter.get('/api/getAllPatient/', async (req, res) => {
     }
 });
 
-patientRouter.post('/api/editPatient', async (req, res) => {
+patientRouter.post('/api/editPatient', async(req, res) => {
     try {
         console.log("editPatient Function is  called");
         const {
@@ -128,7 +130,7 @@ patientRouter.post('/api/editPatient', async (req, res) => {
     }
 });
 
-patientRouter.post('/api/editPatientRecord', async (req, res) => {
+patientRouter.post('/api/editPatientRecord', async(req, res) => {
     try {
         console.log("editPatientRecord Function is  called");
         const {
@@ -152,7 +154,7 @@ patientRouter.post('/api/editPatientRecord', async (req, res) => {
 });
 
 
-patientRouter.post('/api/addPatientRecord', async (req, res) => {
+patientRouter.post('/api/addPatientRecord', async(req, res) => {
     try {
         console.log("addPatientRecord Function is  called");
         const {
@@ -176,11 +178,13 @@ patientRouter.post('/api/addPatientRecord', async (req, res) => {
     }
 });
 
-patientRouter.post('/api/deletePatientRecord/', async (req, res) => {
+patientRouter.post('/api/deletePatientRecord/', async(req, res) => {
     try {
         console.log('calling deletePatient Route');
-        const { _id,
-            idHealthRecord, } = req.body;
+        const {
+            _id,
+            idHealthRecord,
+        } = req.body;
 
         console.log(_id);
         let patient = await Patient.findById(_id);
@@ -205,7 +209,17 @@ patientRouter.post('/api/deletePatientRecord/', async (req, res) => {
     }
 });
 
-patientRouter.get('/api/searchPatient/:attribute/:query', async (req, res) => {
+patientRouter.get('/api/searchPatientById/:id', async(req, res) => {
+    try {
+        console.log("search by id func is called");
+        const patient = await Patient.findById(req.params.id);
+        res.json(patient);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+patientRouter.get('/api/searchPatient/:attribute/:query', async(req, res) => {
     try {
         console.log("calling searchPatient");
 
@@ -217,38 +231,31 @@ patientRouter.get('/api/searchPatient/:attribute/:query', async (req, res) => {
         console.log(attribute.toLowerCase());
 
         if (attribute.toLowerCase() == 'name') {
-            patient = await Patient.find(
-                { name: { $regex: patientQuery, $options: "i", } },
-                {
-                    'name': 0,
-                    'address': 0,
-                    'gender': 0,
-                    'dob': 0,
-                    'phoneNumber': 0,
-                    'email': 0,
-                    'avt': 0,
-                    'status': 0,
-                    'symptom': 0,
-                    'healthRecord': 0,
-                }
-            );
-        }
-        else if (attribute.toLowerCase() == 'id') {
-            patient = await Patient.find(
-                { id: { $regex: patientQuery, $options: "i" } },
-                {
-                    'name': 0,
-                    'address': 0,
-                    'gender': 0,
-                    'dob': 0,
-                    'phoneNumber': 0,
-                    'email': 0,
-                    'avt': 0,
-                    'status': 0,
-                    'symptom': 0,
-                    'healthRecord': 0,
-                }
-            );
+            patient = await Patient.find({ name: { $regex: patientQuery, $options: "i", } }, {
+                'name': 0,
+                'address': 0,
+                'gender': 0,
+                'dob': 0,
+                'phoneNumber': 0,
+                'email': 0,
+                'avt': 0,
+                'status': 0,
+                'symptom': 0,
+                'healthRecord': 0,
+            });
+        } else if (attribute.toLowerCase() == 'id') {
+            patient = await Patient.find({ id: { $regex: patientQuery, $options: "i" } }, {
+                'name': 0,
+                'address': 0,
+                'gender': 0,
+                'dob': 0,
+                'phoneNumber': 0,
+                'email': 0,
+                'avt': 0,
+                'status': 0,
+                'symptom': 0,
+                'healthRecord': 0,
+            });
         }
 
 

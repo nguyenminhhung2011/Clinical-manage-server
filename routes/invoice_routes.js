@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const invoiceRouter = express.Router();
-const { json } = require('express');
+    const { json } = require('express');
 const Invoice = require('../models/invoice')
 
 

@@ -59,7 +59,8 @@ io.on("connection", (socket) => {
     socket.on('finish', data => {
         console.log(data);
         socket.leave(socket.token);
-    }, );
+    },);
+    
 });
 
 app.use(express.json());
