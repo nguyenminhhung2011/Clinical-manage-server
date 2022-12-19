@@ -117,17 +117,17 @@ authRouter.get('/api/resetPassword/:id/:token', async(req, res) => {
     }
 
     const secretKey = JWT_SECRET + user.password;
-    try {
+    try {   
         const payload = jwt.verify(token, secretKey);
         if (!payload) {
             res.json({ isVerifySuccessful: false });
         } else {
-            console.log('here')
             let _token = await Token.findOne({ token: token });
+            
             if (!_token) {
                 return res.status(404).json({ msg: "User is not found  Or verify link has expired" });
             }
-            console.log('here');
+
             console.log(_token.socketID);
             let socket = sockets.get(_token.socketID);
 
@@ -135,16 +135,12 @@ authRouter.get('/api/resetPassword/:id/:token', async(req, res) => {
 
             socket.emit('verify', 'verified');
 
-            console.log('here')
-
             await Token.deleteMany({ token: token });
             res.json({ isVerifySuccessful: true });
         }
     } catch (error) {
         res.status(500).json({ msg: e.message });
     }
-
-
 })
 
 authRouter.post('/api/restorePassword', async(req, res) => {
