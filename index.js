@@ -12,6 +12,7 @@ const healthRecordRouter = require('./routes/healthRecord_routes');
 const serviceRouter = require('./routes/service_routes')
 const clinicalRoomRouter = require('./routes/clinical_room_routes');
 const regulationRouter = require('./routes/regulation_routes');
+const notificationRouter = require('./routes/notification_routes');
 
 ///////////////////////////////////LIBRARY///////////////////////////////////
 const Token = require('./models/token');
@@ -31,6 +32,7 @@ app.use(medicineRouter);
 app.use(invoiceRouter);
 app.use(clinicalRoomRouter);
 app.use(regulationRouter);
+app.use(notificationRouter);
 
 io.on("connection", (socket) => {
     console.log(socket.id, "has joined");
@@ -46,26 +48,26 @@ io.on("connection", (socket) => {
     socket.on('fromClient', data => {
         console.log(data);
         socket.emit('fromServer', `${Number(data) + 1}`)
-    },);
+    }, );
     socket.on('verify-success', async data => {
 
         console.log(data.token);
         let _token = new Token({ token: data.token, socketID: socket.id });
         _token = await _token.save();
         console.log(_token)
-    },);
+    }, );
 
     socket.on('finish', data => {
         console.log(data);
         socket.leave(socket.token);
-    },);
-    
+    }, );
+
     socket.on('disconnect socket', data => {
         console.log('disconnect socket');
         socket.leave();
-       
+
         socket.disconnect();
-    },);
+    }, );
 });
 
 app.use(express.json());
@@ -76,9 +78,9 @@ app.use(serviceRouter)
 
 
 mongoose.connect(DB).then(() => {
-    console.log("Connection Database Successful");
+        console.log("Connection Database Successful");
 
-})
+    })
     .catch((e) => {
         console.log(e);
     });
