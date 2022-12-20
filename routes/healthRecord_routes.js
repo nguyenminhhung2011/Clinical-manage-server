@@ -56,7 +56,7 @@ healthRecordRouter.post('/api/addHealthRecord', async (req, res) => {
         healthRecord = await healthRecord.save();
 
         for (let value of sockets.values()) {
-            if (value.userType == 'Doctor') {
+            if (value.userType == 'Doctor' || value.userType == "Admin") {
                 await value.socket.emit('serverNotify', { msg: 'newHealthRecord', healthRecord: healthRecord._id });
             }
         }
@@ -88,6 +88,20 @@ healthRecordRouter.post('/api/deleteHealthRecord/', async (req, res) => {
         }
 
         console.log(healthRecord);
+
+
+        for (let value of sockets.values()) {
+            if (value.userType == 'Doctor' || value.userType == "Admin") {
+                await value.socket.emit(
+                    'serverNotify',
+                    {
+                        msg: 'deleteHealthRecord',
+                        id: healthRecord._id,
+                        patientId: healthRecord.patientId,
+                    },
+                );
+            }
+        }
 
         res.json({ isSuccess: true, healthRecord: { id: healthRecord._id, ...healthRecord._doc } });
 
@@ -193,6 +207,39 @@ healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
         }
 
         healthRecord = await healthRecord.save();
+
+        for (let value of sockets.values()) {
+            await value.socket.emit('serverNotify', { msg: 'editHealthRecord', healthRecord: healthRecord._id });
+        }
+
+        res.json({ id: healthRecord._id, isSuccess: true });
+
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+healthRecordRouter.post('/api/updateHealthRecordStatus', async (req, res) => {
+    try {
+        console.log("updateHealthRecordStatus Function is  called");
+        const {
+            id,
+            status,
+        } = req.body;
+
+        let healthRecord = await HealthRecord.findById(id);
+
+        if (!healthRecord) {
+            res.status(400).json({ msg: 'Can\'t found the corresponding healthRecord' })
+        }
+        healthRecord.status = status;
+        healthRecord = await healthRecord.save();
+
+        for (let value of sockets.values()) {
+            await value.socket.emit('serverNotify', {
+                msg: 'updateHealthRecordStatus', healthRecord: healthRecord._id, status: status,
+            });
+        }
 
         res.json({ id: healthRecord._id, isSuccess: true });
 

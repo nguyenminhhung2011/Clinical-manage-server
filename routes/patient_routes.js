@@ -9,7 +9,7 @@ const e = require('express');
 const JWT_SECRET = "asdfasdfadsfasdfqwerjfzxcv@#$#%@:::::"
 const { sockets } = require('./auth_routes');
 
-patientRouter.post('/api/addPatient/', async(req, res) => {
+patientRouter.post('/api/addPatient/', async (req, res) => {
     try {
         console.log('calling addPatient Route');
         const {
@@ -47,8 +47,8 @@ patientRouter.post('/api/addPatient/', async(req, res) => {
 
         for (let data of sockets.values()) {
             // if (data.userType == 'Admin') {
-                let socket = data.socket;
-                await socket.emit('serverNotify', { msg: 'newPatient', patient: patient._id });
+            let socket = data.socket;
+            await socket.emit('serverNotify', { msg: 'newPatient', patient: patient._id });
             // }
         }
 
@@ -60,7 +60,7 @@ patientRouter.post('/api/addPatient/', async(req, res) => {
 });
 
 
-patientRouter.post('/api/deletePatient/', async(req, res) => {
+patientRouter.post('/api/deletePatient/', async (req, res) => {
     try {
         console.log('calling deletePatient Route');
         const { patientId } = req.body;
@@ -74,6 +74,15 @@ patientRouter.post('/api/deletePatient/', async(req, res) => {
 
         console.log(patient);
 
+        for (let data of sockets.values()) {
+            let socket = data.socket;
+            await socket.emit(
+                'serverNotify',
+                { msg: 'deletePatient', patient: patient._id }
+            );
+        }
+
+
         res.json({ isSuccess: true, patient: { id: patient._id, ...patient._doc } });
 
     } catch (error) {
@@ -81,7 +90,7 @@ patientRouter.post('/api/deletePatient/', async(req, res) => {
     }
 });
 
-patientRouter.get('/api/getPatientById/', async(req, res) => {
+patientRouter.get('/api/getPatientById/', async (req, res) => {
     try {
         console.log('calling getPatientById Route');
         let id = req.headers['id'];
@@ -98,7 +107,8 @@ patientRouter.get('/api/getPatientById/', async(req, res) => {
     }
 });
 
-patientRouter.get('/api/getAllPatient/', async(req, res) => {
+
+patientRouter.get('/api/getAllPatient/', async (req, res) => {
     try {
         console.log('calling getAllPatient Route');
 
@@ -114,7 +124,7 @@ patientRouter.get('/api/getAllPatient/', async(req, res) => {
     }
 });
 
-patientRouter.post('/api/editPatient', async(req, res) => {
+patientRouter.post('/api/editPatient', async (req, res) => {
     try {
         console.log("editPatient Function is  called");
         const {
@@ -156,7 +166,7 @@ patientRouter.post('/api/editPatient', async(req, res) => {
     }
 });
 
-patientRouter.post('/api/editPatientRecord', async(req, res) => {
+patientRouter.post('/api/editPatientRecord', async (req, res) => {
     try {
         console.log("editPatientRecord Function is  called");
         const {
@@ -180,7 +190,7 @@ patientRouter.post('/api/editPatientRecord', async(req, res) => {
 });
 
 
-patientRouter.post('/api/addPatientRecord', async(req, res) => {
+patientRouter.post('/api/addPatientRecord', async (req, res) => {
     try {
         console.log("addPatientRecord Function is  called");
         const {
@@ -204,7 +214,7 @@ patientRouter.post('/api/addPatientRecord', async(req, res) => {
     }
 });
 
-patientRouter.post('/api/deletePatientRecord/', async(req, res) => {
+patientRouter.post('/api/deletePatientRecord/', async (req, res) => {
     try {
         console.log('calling deletePatient Route');
         const {
@@ -235,7 +245,7 @@ patientRouter.post('/api/deletePatientRecord/', async(req, res) => {
     }
 });
 
-patientRouter.get('/api/searchPatientById/:id', async(req, res) => {
+patientRouter.get('/api/searchPatientById/:id', async (req, res) => {
     try {
         console.log("search by id func is called");
         const patient = await Patient.findById(req.params.id);
@@ -245,7 +255,7 @@ patientRouter.get('/api/searchPatientById/:id', async(req, res) => {
     }
 });
 
-patientRouter.get('/api/searchPatient/:attribute/:query', async(req, res) => {
+patientRouter.get('/api/searchPatient/:attribute/:query', async (req, res) => {
     try {
         console.log("calling searchPatient");
 
@@ -294,7 +304,7 @@ patientRouter.get('/api/searchPatient/:attribute/:query', async(req, res) => {
                 'status': 0,
                 'symptom': 0,
                 'healthRecord': 0,
-            }, );
+            },);
         }
 
 
@@ -305,7 +315,7 @@ patientRouter.get('/api/searchPatient/:attribute/:query', async(req, res) => {
     }
 });
 
-patientRouter.get('/api/searchByDateTime/:dateTime', async(req, res) => {
+patientRouter.get('/api/searchByDateTime/:dateTime', async (req, res) => {
     console.log('calling searchByDateTime');
     let dateTime = req.params.dateTime;
     let patient = await Patient.find({
@@ -321,7 +331,7 @@ patientRouter.get('/api/searchByDateTime/:dateTime', async(req, res) => {
         'status': 0,
         'symptom': 0,
         'healthRecord': 0,
-    }, );
+    },);
     res.json({ patient: patient });
 });
 
