@@ -5,9 +5,9 @@ const jwt = require("jsonwebtoken");
 
 const auth = require("../middlewares/auth_data");
 const { sts } = require('googleapis/build/src/apis/sts');
+const { sockets } = require('./auth_routes');
 
-
-healthRecordRouter.post('/api/addHealthRecord', async(req, res) => {
+healthRecordRouter.post('/api/addHealthRecord', async (req, res) => {
     try {
         console.log("add health record is called");
         const {
@@ -56,12 +56,18 @@ healthRecordRouter.post('/api/addHealthRecord', async(req, res) => {
 
         healthRecord = await healthRecord.save();
 
+        for (let value of sockets.values()) {
+            if (value.userType == 'Doctor') {
+                await value.socket.emit('serverNotify', { msg: 'newHealthRecord', healthRecord: healthRecord._id });
+            }
+        }
+
         res.json({ id: healthRecord._id });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
-healthRecordRouter.get('/deleteAllHealthRecord', async(req, res) => {
+healthRecordRouter.get('/deleteAllHealthRecord', async (req, res) => {
     try {
         const result = await HealthRecord.deleteMany();
         res.json({ success: "OIK" });
@@ -70,7 +76,7 @@ healthRecordRouter.get('/deleteAllHealthRecord', async(req, res) => {
     }
 });
 
-healthRecordRouter.post('/api/deleteHealthRecord/', async(req, res) => {
+healthRecordRouter.post('/api/deleteHealthRecord/', async (req, res) => {
     try {
         console.log('calling deleteHealthRecord Route');
         const { healthRecordId } = req.body;
@@ -91,7 +97,7 @@ healthRecordRouter.post('/api/deleteHealthRecord/', async(req, res) => {
     }
 });
 
-healthRecordRouter.get('/api/getAllHealthRecord', async(req, res) => {
+healthRecordRouter.get('/api/getAllHealthRecord', async (req, res) => {
     try {
         console.log('calling getAllHealthReportDta Route');
 
@@ -107,7 +113,26 @@ healthRecordRouter.get('/api/getAllHealthRecord', async(req, res) => {
     }
 });
 
-healthRecordRouter.post('/api/editHealthRecord', async(req, res) => {
+
+healthRecordRouter.get('/api/getHealthRecordById', async (req, res) => {
+    try {
+        console.log('calling getHealthRecordById Route');
+
+        let id = req.headers['id'];
+
+        let healthRecord = await HealthRecord.findById(id);
+
+        if (!healthRecord) {
+            return res.status(404).json({ isSuccess: false, msg: " Health Record does not exist" });
+        }
+
+        res.json({ isSuccess: true, healthRecord: { id: healthRecord._id, ...healthRecord._doc } });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+healthRecordRouter.post('/api/editHealthRecord', async (req, res) => {
     try {
         console.log("editHealthRecord Function is  called");
         const {
@@ -161,11 +186,11 @@ healthRecordRouter.post('/api/editHealthRecord', async(req, res) => {
         healthRecord.medicines = [];
 
         for (let i = 0; i < services.length; i++) {
-            healthRecord.services.push({ service: services[i].service, provider: services[i].provider, quantity: services[i].quantity, amount: services[i].amount, }, );
+            healthRecord.services.push({ service: services[i].service, provider: services[i].provider, quantity: services[i].quantity, amount: services[i].amount, },);
         }
 
         for (let i = 0; i < medicines.length; i++) {
-            healthRecord.medicines.push({ medicine: medicines[i].medicine, provider: medicines[i].provider, quantity: medicines[i].quantity, amount: medicines[i].amount, }, );
+            healthRecord.medicines.push({ medicine: medicines[i].medicine, provider: medicines[i].provider, quantity: medicines[i].quantity, amount: medicines[i].amount, },);
         }
 
         healthRecord = await healthRecord.save();

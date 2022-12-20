@@ -37,18 +37,18 @@ authRouter.post('/api/signup', async(req, res) => {
 authRouter.post('/api/signin', async(req, res) => {
     try {
         const { email, password } = req.body;
-        console.log("hahahah");
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ msg: "User is not found" });
         }
         const isMatch = await bcrypt.compare(password, user.password);
+        
         if (!isMatch) {
             return res.status(400).json({ msg: "Incorrect Pssword" });
         }
+        
         const token = jwt.sign({ id: user._id }, "passwordkey");
-        // if(res.)
-        // let doc = await Doctor.findOne({ idUser: user._id });
+
         res.json({ token, ...user._doc });
     } catch (e) {
         res.status(500).json({ err: e.message });
@@ -129,7 +129,7 @@ authRouter.get('/api/resetPassword/:id/:token', async(req, res) => {
             }
 
             console.log(_token.socketID);
-            let socket = sockets.get(_token.socketID);
+            let {socket} = sockets.get(_token.socketID);
 
             console.log(socket.id);
 
