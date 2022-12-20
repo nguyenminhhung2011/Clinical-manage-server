@@ -9,6 +9,7 @@ const { sts } = require('googleapis/build/src/apis/sts');
 
 healthRecordRouter.post('/api/addHealthRecord', async(req, res) => {
     try {
+        console.log("add health record is called");
         const {
             dateCreate,
             totalMoney,
