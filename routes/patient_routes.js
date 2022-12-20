@@ -43,10 +43,14 @@ patientRouter.post('/api/addPatient/', async (req, res) => {
         }
 
         patient = await patient.save();
-        
-        for (let socket of sockets.values()) {
-            await socket.emit('newPatient', { msg: 'There is a new patient added to database', patient: patient._id });
+
+        for (let data of sockets.values()) {
+            // if (data.userType == 'Admin') {
+                let socket = data.socket;
+                await socket.emit('serverNotify', { msg: 'newPatient', patient: patient._id });
+            // }
         }
+
         res.json({ id: patient._id, isSuccess: true });
 
     } catch (error) {
@@ -87,7 +91,7 @@ patientRouter.get('/api/getPatientById/', async (req, res) => {
             return res.status(404).json({ isSuccess: false, msg: "Not exists patient" });
         }
 
-        res.json({ isSuccess: true, patient: patient});
+        res.json({ isSuccess: true, patient: patient });
     } catch (error) {
         res.status(500).json({ isSuccess: false, error: error.message });
     }
