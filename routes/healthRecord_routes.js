@@ -58,7 +58,7 @@ healthRecordRouter.post('/api/addHealthRecord', async(req, res) => {
         healthRecord = await healthRecord.save();
 
         for (let value of sockets.values()) {
-            if (value.userType == 'Doctor' || value.userType == 'Admin' || value.userType == "Admin") {
+            if (value.userType == 'Doctor' || value.userType == 'Admin') {
                 await value.socket.emit('serverNotify', { msg: 'newHealthRecord', healthRecord: healthRecord._id });
             }
         }
