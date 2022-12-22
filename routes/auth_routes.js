@@ -97,7 +97,7 @@ authRouter.post('/api/forgetPassword', async(req, res) => {
             id: user._id
         }
         const token = jwt.sign(payload, secretKey, { expiresIn: '15m' });
-        const link = `http://localhost:5000/api/resetPassword/${user.id}/${token}`;
+        const link = `https://clinical-manage-server-production.up.railway.app/api/resetPassword/${user.id}/${token}`;
 
         console.log(link);
 
