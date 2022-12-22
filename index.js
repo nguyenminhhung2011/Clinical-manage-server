@@ -17,6 +17,7 @@ const notificationRouter = require('./routes/notification_routes');
 ///////////////////////////////////LIBRARY///////////////////////////////////
 const Token = require('./models/token');
 const PORT = process.env.PORT || 5000;
+const IP = process.env.IP;
 const app = express();
 var server = require('http').createServer(app);
 const io = require('socket.io')(server);
@@ -48,26 +49,26 @@ io.on("connection", (socket) => {
     socket.on('fromClient', data => {
         console.log(data);
         socket.emit('fromServer', `${Number(data) + 1}`)
-    }, );
+    },);
     socket.on('verify-success', async data => {
 
         console.log(data.token);
         let _token = new Token({ token: data.token, socketID: socket.id });
         _token = await _token.save();
         console.log(_token)
-    }, );
+    },);
 
     socket.on('finish', data => {
         console.log(data);
         socket.leave(socket.token);
-    }, );
+    },);
 
     socket.on('disconnect socket', data => {
         console.log('disconnect socket');
         socket.leave();
 
         socket.disconnect();
-    }, );
+    },);
 });
 
 app.use(express.json());
@@ -78,13 +79,15 @@ app.use(serviceRouter)
 
 
 mongoose.connect(DB).then(() => {
-        console.log("Connection Database Successful");
+    console.log("Connection Database Successful");
 
-    })
+})
     .catch((e) => {
         console.log(e);
     });
 
-server.listen(PORT, () => {
-    console.log(`Connection with port: ${PORT}`);
-});
+server.listen(PORT, IP, '0.0.0.0', () => {
+    console.log(`Connection with port: ${PORT}`,
+    );
+},
+);
