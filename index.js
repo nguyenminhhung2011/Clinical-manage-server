@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 
 ///////////////////////////////////ROUTER///////////////////////////////////
@@ -17,7 +18,6 @@ const notificationRouter = require('./routes/notification_routes');
 ///////////////////////////////////LIBRARY///////////////////////////////////
 const Token = require('./models/token');
 const PORT = process.env.PORT || 5000;
-const IP = process.env.IP;
 const app = express();
 var server = require('http').createServer(app);
 const io = require('socket.io')(server);
@@ -25,6 +25,7 @@ const DB = "mongodb+srv://nguyenminhhung:20112002@cluster0.thz1i4g.mongodb.net/?
 
 
 app.use(express.json());
+app.use(cors());
 app.use(authRouter);
 app.use(doctorRouter);
 app.use(departMentRouter);
@@ -77,6 +78,13 @@ app.use(doctorRouter);
 app.use(healthRecordRouter)
 app.use(serviceRouter)
 
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
+
 
 mongoose.connect(DB).then(() => {
     console.log("Connection Database Successful");
@@ -86,7 +94,7 @@ mongoose.connect(DB).then(() => {
         console.log(e);
     });
 
-server.listen(PORT, IP, '0.0.0.0', () => {
+server.listen(PORT, () => {
     console.log(`Connection with port: ${PORT}`,
     );
 },

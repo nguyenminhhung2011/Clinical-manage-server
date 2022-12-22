@@ -5,6 +5,9 @@ const Token = require('../models/token')
 const bcrypt = require("bcryptjs");
 const authRouter = express.Router();
 const jwt = require("jsonwebtoken");
+const acceptData = require("../middlewares/accept_data");
+
+const cors = require('cors');
 
 const { json, application } = require('express');
 const auth = require("../middlewares/auth_data");
@@ -34,7 +37,7 @@ authRouter.post('/api/signup', async(req, res) => {
     }
 });
 
-authRouter.post('/api/signin', async(req, res) => {
+authRouter.post('/api/signin',cors(), async(req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
